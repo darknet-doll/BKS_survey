@@ -4,7 +4,7 @@ Exploratory analyses of the **Big Kink Survey** public dataset.
 
 ## About the dataset
 
-The Big Kink Survey was created and administered by Aella, collecting responses from ~970,000 participants. Topics span sexual interests and kinks, personality traits (OCEAN model), demographics, political orientation, relationship structures, and psychological characteristics. The survey is still open.
+The Big Kink Survey was created and administered by [Aella](https://aella.substack.com/p/heres-my-big-kink-survey-dataset), collecting responses from ~970,000 participants. Topics span sexual interests and kinks, personality traits (OCEAN model), demographics, political orientation, relationship structures, and psychological characteristics. The survey is still open.
 
 The publicly released dataset is an **anonymized subset** of the original responses. To protect participant privacy, the published data is limited to respondents **aged 18–32 from Western countries** (US, Canada, and Europe), and has been processed with:
 

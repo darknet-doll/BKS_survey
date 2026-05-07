@@ -1,12 +1,24 @@
-# BKS Survey — OCEAN Variables
+# BKS - Schema & Data Review
+[references](https://docs.google.com/document/d/1B3Itxfko-DzyzQlF4_Qc73aSTrcPyLpaySRRyD7-EY0/edit?tab=t.0)
 
+## Arousal Scale
+| Scale | Represents |
+|---:|---|
+| 0 | Not arousing |
+| 1 | Slightly arousing |
+| 2 | Somewhat arousing |
+| 3 | Moderately arousing |
+| 4 | Very arousing |
+| 5 | Extremely arousing |
+
+## OCEAN Variables
 Reference for the five Big Five (OCEAN) `*variable` columns in `reddit/database/BKSPublic.csv`. Companion to [survey_review.ipynb](survey_review.ipynb).
 
-## Big Five (OCEAN) personality variables
+### Big Five (OCEAN) personality variables
 
 The five OCEAN `*variable` columns (`opennessvariable`, `consciensiousnessvariable`, `extroversionvariable`, `neuroticismvariable`, `agreeablenessvariable`) are computed as **differences between opposing items**, each scoring on a **−6 to +6 scale**. **Scores > 0 indicate endorsement of the trait; scores < 0 indicate disendorsement; 0 indicates ambiguity.** All five are 0% null — usable against any subset without denominator gymnastics. (Column names misspell "conscientiousness" as `consciensiousness` — preserve that when querying.)
 
-## Agreement scale
+### Agreement scale
 
 All personality items use this 7-point agreement scale:
 
@@ -20,9 +32,9 @@ All personality items use this 7-point agreement scale:
 | Disagree | −2 |
 | Totally disagree | −3 |
 
-## Score Computation & Interpretation
+### Score Computation & Interpretation
 
-### Computation
+#### Computation
 
 Each OCEAN variable is `positive_item − negative_item`. Both items are scored −3 to +3 from the agreement scale above.
 
@@ -41,7 +53,7 @@ Pairing oppositely-worded items controls for **acquiescence bias** (the tendency
 | `agreeablenessvariable` | agreeableness2 − agreeableness | −6 to +6 |
 | `powerlessnessvariable` | power3 + power2 + power | −9 to +9 |
 
-### Interpretation
+#### Interpretation
 
 Use this table to read any single value you see in the data.
 
@@ -63,31 +75,31 @@ Use this table to read any single value you see in the data.
 
 **On this dataset** most scores cluster between −3 and +4 (extroversion shifted left, agreeableness shifted right), so values of ±5 or ±6 are distinctive.
 
-## Survey items used in OCEAN/powerlessness variables
+### Survey items used in OCEAN/powerlessness variables
 
 Source: https://docs.google.com/document/d/1B3Itxfko-DzyzQlF4_Qc73aSTrcPyLpaySRRyD7-EY0/edit?tab=t.0
 
-#### Openness
+##### Openness
 - **Positive** (openness2): "I have excellent ideas"
 - **Negative** (openness): "I have difficulty understanding abstract ideas"
 
-#### Conscientiousness
+##### Conscientiousness
 - **Positive** (consciensiousness2): "I like order"
 - **Negative** (consciensiousness): "I shirk my duties"
 
-#### Extroversion
+##### Extroversion
 - **Positive** (extroversion2): "I am the life of the party"
 - **Negative** (extroversion): "I am quiet around strangers"
 
-#### Neuroticism
+##### Neuroticism
 - **Positive** (neuroticism2): "I worry about things"
 - **Negative** (neuroticism): "I am relaxed most of the time"
 
-#### Agreeableness
+##### Agreeableness
 - **Positive** (agreeableness2): "I sympathize with others' feelings"
 - **Negative** (agreeableness): "I feel little concern for others"
 
-#### Powerlessness (computed as sum, not difference)
+##### Powerlessness (computed as sum, not difference)
 Unlike OCEAN traits (which subtract negative from positive), powerlessness sums three items:
 - (power3): "If life is a game, then I'm losing"
 - (power2): "I don't have very much power over those around me"
@@ -95,7 +107,23 @@ Unlike OCEAN traits (which subtract negative from positive), powerlessness sums 
 
 **Interpretation:** Higher agreement = higher powerlessness (range −9 to +9).
 
-### Survey items asked but NOT used in OCEAN/powerlessness
+#### Survey items asked but NOT used in OCEAN/powerlessness
 - "I am high powered, driven, successful"
 - "I need to feel in control"
 - "I've experienced a lot of sexual harassment"
+
+## Abnormal Fetish
+** Uncommon things: Check all the following categories that contain a thing that arouses you.**
+- **Abnormal bodies and body parts**: (massive bellies, tails/horns, giants, etc.)
+- **Age**: nonstandard (age gaps, ageplay, unusual ages, etc.)
+- **Bestiality/creatures**: (dogs, horses, dolphins, insects, squid, etc.)
+- **Bodily secretions**: (farts, squirt, urine, blood, etc.)
+- **Brutal/violent**: (gore, mutilation, amputations, drowning, etc.)
+- **Creepy/horror**: (zombies, necrophilia, live insertions, etc.)
+- **Dirtiness/disgust/messiness**: (cakesitting, STDs, soiling, etc.)
+- **Genderplay**: (sissification, futa, crossdressing, etc.)
+- **Mental Alteration**: (hypnotism/mind control, amnesia, cocaine, etc.)
+- **Objects**: nonstandard (hairbrushes, rope, cars, etc.)
+- **Reproduction**: (pregnancy, surrogacy, oviposition, etc.)
+- **Transformations**:(growth/shrinking, bodyswapping, furries, etc.)
+- **Vore**: (consuming/being consumed, usually whole)

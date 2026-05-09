@@ -11,16 +11,9 @@
 | 4 | Very arousing |
 | 5 | Extremely arousing |
 
-## OCEAN Variables
-Reference for the five Big Five (OCEAN) `*variable` columns in `reddit/database/BKSPublic.csv`. Companion to [survey_review.ipynb](survey_review.ipynb).
+## Agreement scale
 
-### Big Five (OCEAN) personality variables
-
-The five OCEAN `*variable` columns (`opennessvariable`, `consciensiousnessvariable`, `extroversionvariable`, `neuroticismvariable`, `agreeablenessvariable`) are computed as **differences between opposing items**, each scoring on a **−6 to +6 scale**. **Scores > 0 indicate endorsement of the trait; scores < 0 indicate disendorsement; 0 indicates ambiguity.** All five are 0% null — usable against any subset without denominator gymnastics. (Column names misspell "conscientiousness" as `consciensiousness` — preserve that when querying.)
-
-### Agreement scale
-
-All personality items use this 7-point agreement scale:
+Used by both OCEAN personality items and powerlessness items below.
 
 | Response | Score |
 |---|---:|
@@ -31,6 +24,13 @@ All personality items use this 7-point agreement scale:
 | Somewhat disagree | −1 |
 | Disagree | −2 |
 | Totally disagree | −3 |
+
+## OCEAN Variables
+Reference for the five Big Five (OCEAN) `*variable` columns in `reddit/database/BKSPublic.csv`. Companion to [survey_review.ipynb](survey_review.ipynb).
+
+### Big Five (OCEAN) personality variables
+
+The five OCEAN `*variable` columns (`opennessvariable`, `consciensiousnessvariable`, `extroversionvariable`, `neuroticismvariable`, `agreeablenessvariable`) are computed as **differences between opposing items**, each scoring on a **−6 to +6 scale**. **Scores > 0 indicate endorsement of the trait; scores < 0 indicate disendorsement; 0 indicates ambiguity.** All five are 0% null — usable against any subset without denominator gymnastics. (Column names misspell "conscientiousness" as `consciensiousness` — preserve that when querying.)
 
 ### Score Computation & Interpretation
 
@@ -51,7 +51,6 @@ Pairing oppositely-worded items controls for **acquiescence bias** (the tendency
 | `extroversionvariable` | extroversion2 − extroversion | −6 to +6 |
 | `neuroticismvariable` | neuroticism2 − neuroticism | −6 to +6 |
 | `agreeablenessvariable` | agreeableness2 − agreeableness | −6 to +6 |
-| `powerlessnessvariable` | power3 + power2 + power | −9 to +9 |
 
 #### Interpretation
 
@@ -75,7 +74,7 @@ Use this table to read any single value you see in the data.
 
 **On this dataset** most scores cluster between −3 and +4 (extroversion shifted left, agreeableness shifted right), so values of ±5 or ±6 are distinctive.
 
-### Survey items used in OCEAN/powerlessness variables
+### Survey items used in OCEAN
 
 Source: https://docs.google.com/document/d/1B3Itxfko-DzyzQlF4_Qc73aSTrcPyLpaySRRyD7-EY0/edit?tab=t.0
 
@@ -99,15 +98,42 @@ Source: https://docs.google.com/document/d/1B3Itxfko-DzyzQlF4_Qc73aSTrcPyLpaySRR
 - **Positive** (agreeableness2): "I sympathize with others' feelings"
 - **Negative** (agreeableness): "I feel little concern for others"
 
-##### Powerlessness (computed as sum, not difference)
-Unlike OCEAN traits (which subtract negative from positive), powerlessness sums three items:
-- (power3): "If life is a game, then I'm losing"
-- (power2): "I don't have very much power over those around me"
+## Powerlessness (Perceived Agency)
+
+`powerlessnessvariable` is **conceptually distinct from OCEAN** and should not be read as a sixth personality trait. It captures a **worldview / perceived locus of control** — how the respondent interprets their position relative to others — rather than a dispositional behaviour pattern. Closer in spirit to established constructs like Rotter's external locus of control, Seligman's learned helplessness, or just-world belief than to the Big Five.
+
+Two methodological consequences follow:
+
+1. **Items are summed, not differenced.** All three items point at the same belief (perceived powerlessness), so they are summed rather than paired into opposing-pole differences. As a result, the variable does **not** control for acquiescence bias the way OCEAN does — pure acquiescers will score high.
+2. **Range is −9 to +9.** Three items × ±3 each. Higher = more agreement with the powerlessness frame.
+
+### Computation
+
+| Variable | Formula | Range |
+|---|---|---|
+| `powerlessnessvariable` | power + power2 + power3 | −9 to +9 |
+
+### Interpretation
+
+| Score | Interpretation |
+|------:|---|
+| +9 | Maximum: totally agreed with all three items |
+| +6 to +8 | Strong powerlessness worldview |
+| +3 to +5 | Clear powerlessness lean |
+| +1 to +2 | Slight powerlessness lean |
+|  0 | Neutral / ambiguous |
+| −1 to −2 | Slight agency lean |
+| −3 to −5 | Clear agency lean |
+| −6 to −8 | Strong sense of agency |
+| −9 | Maximum: totally disagreed with all three items |
+
+### Survey items used in Powerlessness
+
 - (power): "I deserve more respect than I get"
+- (power2): "I don't have very much power over those around me"
+- (power3): "If life is a game, then I'm losing"
 
-**Interpretation:** Higher agreement = higher powerlessness (range −9 to +9).
-
-#### Survey items asked but NOT used in OCEAN/powerlessness
+## Survey items asked but NOT used in OCEAN/powerlessness
 - "I am high powered, driven, successful"
 - "I need to feel in control"
 - "I've experienced a lot of sexual harassment"

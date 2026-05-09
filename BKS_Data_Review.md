@@ -30,7 +30,7 @@ Reference for the five Big Five (OCEAN) `*variable` columns in `reddit/database/
 
 ### Big Five (OCEAN) personality variables
 
-The five OCEAN `*variable` columns (`opennessvariable`, `consciensiousnessvariable`, `extroversionvariable`, `neuroticismvariable`, `agreeablenessvariable`) are computed as **differences between opposing items**, each scoring on a **−6 to +6 scale**. **Scores > 0 indicate endorsement of the trait; scores < 0 indicate disendorsement; 0 indicates ambiguity.** All five are 0% null — usable against any subset without denominator gymnastics. (Column names misspell "conscientiousness" as `consciensiousness` — preserve that when querying.)
+The five OCEAN `*variable` columns (`opennessvariable`, `consciensiousnessvariable`, `extroversionvariable`, `neuroticismvariable`, `agreeablenessvariable`) are computed as **differences between opposing items**, each scoring on a **−6 to +6 scale**.
 
 ### Score Computation & Interpretation
 
@@ -136,8 +136,6 @@ Two methodological consequences follow:
 ## Survey items asked but NOT used in OCEAN/powerlessness
 - "I am high powered, driven, successful"
 - "I need to feel in control"
-- "I've experienced a lot of sexual harassment"
-
 ## Abnormal Fetish
 ** Uncommon things: Check all the following categories that contain a thing that arouses you.**
 - **Abnormal bodies and body parts**: (massive bellies, tails/horns, giants, etc.)

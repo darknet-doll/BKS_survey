@@ -658,18 +658,16 @@ The unifying frame: **CGL is best understood as a relational-emotional kink, def
 
 ## Statistical-test glossary
 
-| Test / Metric | What it does | Where used |
-|---|---|---|
-| **Cohen's d** | Standardised mean difference between two groups in pooled-SD units; sample-size-independent | Ch. 1 |
-| **Cohen's h** | Base-rate-normalised effect size for difference in proportions: `h = 2·arcsin(√p1) − 2·arcsin(√p2)` | Ch. 4 (caretaker), Ch. 5 (endorsements + arousal) |
-| **Kruskal-Wallis H** | Non-parametric 3-group omnibus on ranked/ordinal data | Ch. 3 |
-| **Mann-Whitney U** | Non-parametric 2-group test on ranked/ordinal data | Ch. 3 (pairwise follow-ups) |
-| **Bonferroni correction** | Multiplies each p-value by the number of comparisons; conservative family-wise error control | Ch. 3 (3 pairwise comparisons) |
-| **η² (eta-squared)** | Effect size for Kruskal-Wallis; sample-size-independent | Ch. 3 |
-| **Chi-square / Fisher's exact** | 2×2 contingency test for binary endorsement; Fisher used when any expected cell < 5 | Ch. 5 (arousal-scale binary test) |
-| **Odds ratio (OR) + 95% CI** | Group-comparison effect on a log-multiplicative scale; CI excludes 1 ⇔ significant | Ch. 5 (arousal-scale forest plot) |
-| **Benjamini-Hochberg FDR** | Multiple-comparison correction controlling expected false-discovery proportion; less conservative than Bonferroni | Ch. 5 (across 18 arousal-scale items) |
+| Test / Metric | What it does | What it's used for | How to read the results | Where used |
+|---|---|---|---|---|
+| **Cohen's d** | Standardised mean difference between two groups in pooled-SD units; sample-size-independent | How different two groups are on a scale from "the same" to "completely different" — no math degree needed | Bigger number = bigger difference. Anything under 0.10 means "so close it barely matters." 0.20–0.50 means "you'd notice the difference." 0.50+ means "obvious difference." | Ch. 1 |
+| **Cohen's h** | Base-rate-normalised effect size for difference in proportions: `h = 2·arcsin(√p1) − 2·arcsin(√p2)` | Does one group pick something way more often than the other? This measures "how much more." | Bigger number = bigger difference in what two groups like. Under 0.10 means "about the same." 0.20–0.50 means "noticeably different." 0.50+ means "really different tastes." | Ch. 4 (caretaker), Ch. 5 (endorsements + arousal) |
+| **Kruskal-Wallis H** | Non-parametric 3-group omnibus on ranked/ordinal data | Are these three groups ranked differently? (Like, do they order from most-to-least differently?) | Bigger H number + smaller p-value (p < 0.05) = "yes, the groups rank differently." The exact number doesn't matter; just "is p small?" | Ch. 3 |
+| **Mann-Whitney U** | Non-parametric 2-group test on ranked/ordinal data | Are two ranked groups different? | Smaller p-value (p < 0.05) = "yes, they're different." Pair this with Cohen's d or h to see if the difference is tiny or huge. | Ch. 3 (pairwise follow-ups) |
+| **Bonferroni correction** | Multiplies each p-value by the number of comparisons; conservative family-wise error control | If you test the same data 10 times, you'll eventually get a fake "yes" by luck. This correction makes it harder to get fooled. | After correction, p-values get bigger. This means a "yes" is a "yes" you can trust. | Ch. 3 (3 pairwise comparisons) |
+| **η² (eta-squared)** | Effect size for Kruskal-Wallis; sample-size-independent | After Kruskal-Wallis says groups are different, how *big* is that difference? | Numbers under 0.01 = "tiny difference." 0.01–0.06 = "small." 0.06–0.14 = "medium." | Ch. 3 |
+| **Chi-square / Fisher's exact** | 2×2 contingency test for binary endorsement; Fisher used when any expected cell < 5 | "Does group A pick yes/no differently than group B?" | Small p-value (p < 0.05) = "yes, they pick differently." Pair with odds ratio to see by how much. | Ch. 5 (arousal-scale binary test) |
+| **Odds ratio (OR) + 95% CI** | Group-comparison effect on a log-multiplicative scale; CI excludes 1 ⇔ significant | How much more likely is group A to do something than group B? | OR = 2.0 means "group A is twice as likely." OR = 0.5 means "group A is half as likely." If the range (95% CI) crosses 1.0, the difference might be luck. | Ch. 5 (arousal-scale forest plot) |
+| **Benjamini-Hochberg FDR** | Multiple-comparison correction controlling expected false-discovery proportion; less conservative than Bonferroni | Testing 18 things at once? This keeps the "accidentally yes" rate under control without being as harsh as Bonferroni. | After correction, p-values get bigger, but not as much as Bonferroni. A "yes" after this is real. | Ch. 5 (across 18 arousal-scale items) |
 
----
-
-*Public-facing narrative and chart embeds drawn from the technical analysis in [`1a_CGL_EDA_Findings.md`](1a_CGL_EDA_Findings.md), itself auto-generated from `1a_CGL_EDA.ipynb`. Chart figures are produced by [`build_story_figures.py`](build_story_figures.py); rerun that script after any data refresh to regenerate `figures/story_*.png`.*
+--- 

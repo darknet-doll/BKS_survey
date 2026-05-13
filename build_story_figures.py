@@ -491,7 +491,7 @@ def figure_roles(df: pd.DataFrame) -> None:
     ax.legend(loc="lower right", frameon=False, fontsize=10)
     ax.set_title(
         "Role desires: CGL respondents over-endorse caregiving-shaped roles",
-        fontsize=14, fontweight="bold", loc="left", pad=12,
+        fontsize=14, fontweight="bold", loc="left", pad=50,
     )
     subtitle = (
         f"Top 12 of 21 surveyed roles by |gap|.  Across all 21 roles, CGL+ endorses "
@@ -505,7 +505,7 @@ def figure_roles(df: pd.DataFrame) -> None:
         )
     ax.text(0, 1.02, subtitle, transform=ax.transAxes,
             fontsize=10, style="italic", color="#555", va="bottom")
-    plt.tight_layout()
+    plt.tight_layout(rect=[0, 0, 1, 0.96])
     plt.savefig(FIG_DIR / "story_04_roles.png", **SAVE_KW)
     plt.close(fig)
 

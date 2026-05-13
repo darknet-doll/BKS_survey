@@ -73,19 +73,7 @@ What follows are five things the data actually says about CGL, each with the cha
 - **The "evoke in partner" panel mirrors this from the other side.**
   - CGL respondents want partners to feel **powerlessness/vulnerability** (+2.2pp) or **power/smugness** (+1.4pp) — i.e. the inverse-role emotion.
   - They want partners to feel mutual-pursuit emotions less (eagerness −3.7pp, love/romance −1.6pp).
-
-### Statistical significance vs. magnitude
-
-- **Statistical significance: significant by construction.**
-  - A 15-category × 3-group chi-square at n ≈ 15,000 will reject the null essentially regardless of substance.
-  - Reporting an omnibus p-value here adds nothing — *which* categories shift is the substantive question.
-- **Magnitude: small per category, but internally coherent.**
-  - Each individual gap is a few percentage points.
-  - The pattern of shifts (toward asymmetric, away from mutual-pursuit) is consistent across both questions — coherence across items is the real signal.
-- **What this corrects in the public framing of CGL.**
-  - CGL is **not** less aroused or less intense than other kink groups.
-  - CGL is **not** "soft kink" — humiliation, the second-largest positive gap, is incompatible with that read.
-  - CGL is **asymmetric** — two unequal emotional positions in the same scene, both filled by mutual consent.
+  - (The consistency of this pattern across both emotional questions is the real signal — coherence across items, not individual p-values. CGL is **asymmetric** — two unequal emotional positions in the same scene, both filled by mutual consent. This is not less intense or "soft kink"; it is a distinct emotional *structure*.)
 
 > **Pullquote.** CGL respondents seek emotions that fit together because they're *different* — not emotions both people feel in unison.
 
@@ -150,17 +138,7 @@ What follows are five things the data actually says about CGL, each with the cha
   - **CGL = True: 20% endorse it.**
   - **CGL = False: 5% endorse it.**
   - That is a **fourfold over-representation** and the **single largest soft-erotic gap in the entire dataset**.
-
-### Statistical significance vs. magnitude
-
-- **Statistical significance: well above any noise floor.**
-  - Top role gaps run **+6 to +11 percentage points** on populations of ~3,000+ — easily detectable.
-- **Magnitude: small per role, large for the categorical signature.**
-  - Individual roles: Cohen's h roughly 0.20–0.25 (small effect).
-  - **Caretaker dynamic: h ≈ 0.46, a 15pp gap — moderate-to-large effect** and the strongest soft-erotic signal in the survey.
-- **The interpretive read.**
-  - The defining role for CGL is **the relationship shape**, not any specific costumed scenario.
-  - Role variety is additive; the structural-frame item is what locates CGL categorically.
+  - (Individual role gaps of +6–11pp at n=3,000+ per group are well above noise; Cohen's h ≈ 0.20–0.25 for individual roles is small, but the caretaker dynamic hits h ≈ 0.46 — moderate-to-large effect. The defining role for CGL is **the relationship shape**, not any specific costumed scenario.)
 
 > **Pullquote.** 20% of CGL respondents endorse a caretaker dynamic, vs. 5% of non-CGL respondents. The caregiving structure is the signal; the specific role is dressing.
 
@@ -232,20 +210,7 @@ What follows are five things the data actually says about CGL, each with the cha
 - **Universally-popular acts barely move.**
   - Vaginal fingering, oral, standard intercourse — high endorsement (~70–85%) in *both* CGL+ and CGL−, with tiny gaps.
   - The CGL signal is *not* "are you sexually active." It's *which thin subset of acts* carry the right power-dynamic, face/mouth, or control flavour.
-
-### Statistical significance vs. magnitude
-
-- **Acts: small but reliable.**
-  - Top |h| ≈ 0.10–0.17 — small effects on Cohen's scale.
-  - 5–9pp gaps on populations of 3,000+ — well above noise.
-  - The pattern is *which subset* of acts moves, not the magnitude of movement.
-- **Positions: smaller still.**
-  - Top |h| < 0.10.
-  - Positions are a weaker signal than acts; the *what* matters more than the *how*.
-- **What this licenses substantively.**
-  - "CGL respondents over-endorse a face/mouth/control-flavoured subset of acts" — supported.
-  - "CGL respondents have dramatically different sexual acts" — not supported; the popular acts are universal.
-  - The act-level signal is real but small. The structural signal (next chart) is much larger.
+  - (Acts show small but reliable effects: top |h| ≈ 0.10–0.17. Positions are even smaller (top |h| < 0.10). The act-level signal is real but small — the structural signal at the kink-preference level (next chart) is much larger.)
 
 > **Pullquote.** Vaginal fingering is universal; **fingering mouths is +8.5pp higher for CGL.** The acts side of NSFW is real but small — the subset matters more than the magnitude.
 
@@ -272,20 +237,7 @@ What follows are five things the data actually says about CGL, each with the cha
 - **Note on the "gentleness + nonconsent" pairing at the top.**
   - These are not contradictions — they are the two halves of a CGL scene.
   - Gentleness = the caregiver-half emotional register; nonconsent = the structural-fantasy framing the scene plays inside.
-  - The data licenses "CGL respondents over-endorse both the soft register *and* the structured-asymmetry register" — they are not picking one or the other.
-
-### Statistical significance vs. magnitude
-
-- **Common preferences: small-to-moderate effects.**
-  - Top six items at h ≈ 0.23–0.28 (small-to-moderate).
-  - 11–14pp gaps on populations of 3,000+.
-  - These are the **largest endorsement-level CGL signals in the kink-preference data**, larger than any act-level or position-level gap.
-- **Uncommon preferences: same magnitude band as common.**
-  - Top items also at h ≈ 0.20–0.24.
-  - "Mental alteration" sits at the top of the uncommon block and is structurally consistent with the "mindbreak" arousal-scale signal (next chart).
-- **What this licenses substantively.**
-  - The CGL content signal at the kink-preference level is about **scene framing** — what *kind* of scene is happening — much more than about specific acts.
-  - Gentleness AND nonconsent both being elevated is the structural picture, not a paradox: the CGL scene contains soft caregiving content *inside* a power-asymmetric frame.
+  - (Effect sizes on common preferences are small-to-moderate: top items at h ≈ 0.23–0.28, with 11–14pp gaps — the **largest endorsement-level CGL signals in the kink-preference data**, larger than any act-level or position-level gap. Uncommon preferences sit in the same band: h ≈ 0.20–0.24. The CGL content signal is about **scene framing** — what *kind* of scene is happening — much more than about specific acts.)
 
 > **Pullquote.** Gentleness and consensual-non-consent fantasy are the two largest common-preference gaps for CGL respondents — **+13.8 and +13.4 percentage points**. The scene is soft inside an asymmetric frame.
 

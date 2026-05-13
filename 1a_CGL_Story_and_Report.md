@@ -1,17 +1,19 @@
-# What 15,503 People Told Us About Caregiver/Little Kink
+# Understanding Caregiving Dynamic Kinks
 
-### A story drawn from data — and a humanising counter-frame to the stereotypes
+**The Big Kink Survey was created and administered by** [Aella](https://aella.substack.com/p/heres-my-big-kink-survey-dataset), collecting responses from ~970,000 participants. Topics span sexual interests and kinks, personality traits (OCEAN model), demographics, political orientation, relationship structures, and psychological characteristics. The survey is still open.
 
-> _Generated from [`1a_CGL_EDA.ipynb`](1a_CGL_EDA.ipynb), [`1a_CGL_EDA_Findings.md`](1a_CGL_EDA_Findings.md), and [`build_story_figures.py`](build_story_figures.py)._
-> _Sample: **2,845** CGL-positive respondents, **1,295** CGL-negative respondents, plus 11,363 who did not answer the CGL question._
+**Sample:**
+- **15k+** total respondents
+- **2,845** CGL-positive respondents
+- **1,295** CGL-negative respondents_
 
-> **Content note.** This piece discusses adult relationship preferences in clinical, analytic terms. It is about consenting adults and the emotional and relational shapes their fantasies take. Where the underlying data touches sensitive themes, the public-facing summary uses language like "caregiving dynamics" and "wanting to feel held"; precise statistical terms appear in the technical appendix below.
+> **Content note.** This piece discusses adult relationship preferences in clinical, analytic terms. It is about consenting adults and the emotional and relational shapes their fantasies take.
 
 ---
 
 ## The short version
 
-People assume that knowing someone's kink tells you who they *are* — their personality, their hidden self, the truth underneath the surface. When you pour a 15,000-person survey through that assumption, it falls apart. The Caregiver/Little (CGL) data does not describe a personality. It describes a **way of relating** — a structure of care, a direction of tenderness, and a specific emotional shape that two people fill together.
+People assume that knowing someone's kink tells you who they *are* — their personality, their hidden self, the truth underneath the surface. When I analyzed a 15,000-person survey through that assumption, it falls apart. The Caregiver/Little (CGL) data does not describe a personality. It describes a **way of relating** — a structure of care, a direction of tenderness, and a specific emotional shape that two people fill together.
 
 What follows are five things the data actually says about CGL, each with the chart that produced it and a plain-language read on what is — and isn't — statistically significant. The technical appendix beneath this section gives the methods, effect sizes, and limits behind every claim.
 

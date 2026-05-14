@@ -16,13 +16,32 @@
 
 ---
 
-## The Big Picture
+## Findings
 
 People often assume that a kink reveals who someone *is* — their personality, their hidden self, the truth underneath the surface. When I analyzed the CGL data through that lens, it fell apart.
 
-The Caregiver/Little (CGL) pattern does not describe a personality. It describes a **way of relating** — a structure of care, a direction of tenderness, and a specific emotional shape that two people create together. Below are my findings on what actually differs between the two groups — and what doesn't.
+> **TL;DR.** CGL isn't a personality type — it's a *way of relating*. CGL respondents lean (mildly) submissive, want emotionally asymmetric experiences with a caregiving structure, and pair high non-consent fantasy with high enthusiastic consent. The six highlights below trace this story from personality nulls → emotional asymmetry → roles → scenes → arousal signals.
 
----
+### Myths vs. data
+
+Common stereotypes about CGL, mapped against what the data actually says. Each row consolidates the relevant metrics and links to the Highlight where the finding is unpacked.
+
+| The stereotype | What the data says | Where |
+|:---|:---|:---|
+| **CGL is a personality type — it tells you who someone "really" is** <br><br> **CGL respondents feel generally powerless or low-agency in life** <br><br> **Littles are immature, broken, or can't function as adults** | • OCEAN Big Five (openness, conscientiousness, extraversion, neuroticism, agreeableness): **no meaningful difference** between CGL+ and CGL− <br> • All Cohen's \|d\| < 0.05 — smaller than normal within-group variation <br> • Powerlessness / locus-of-belief: **no difference either** — CGL respondents don't feel less in control of their lives in general <br> • Not more agreeable, more open, more conscientious, or more neurotic <br> • No stereotyped personality or belief profile applies | H1 |
+| **CGL = a dominant person controlling a submissive person** <br><br> **CGL = a submissive identity, full stop** | • CGL tilts submissive on average: **44% vs 38%** — only a 6-point gap <br> • **~30%** of CGL respondents are dominant; another ~25% are switches or prefer equal partnerships <br> • Statistically real (Kruskal-Wallis p < 0.001) but practically small (η² = 0.0013) <br> • Knowing someone is CGL barely tells you their D/S preference — it tilts the odds, it doesn't lock anyone in | H3 |
+| **It's "wholesome soft kink" — nothing intense going on** <br><br> **It's not "real" BDSM — just cuddling** | **At the scene level, soft AND intense are *both* elevated:** <br> • Gentleness **+13.8pp** (64.3% vs 50.5%) <br> • Non-consent fantasy **+13.4pp** (61.6% vs 48.2%) <br> • Power dynamics & D/s **+11.9pp** <br> • Humiliation **+11.7pp** <br> • Sadomasochism **+11.2pp** <br><br> **At the arousal level, structured power exchange signals strongly:** <br> • Master/slave **2.39×** more likely arousing <br> • Full-time power exchange **2.32×** <br> • Obedience **2.21×** <br> • Mindbreak / mental domination **2.02×** <br> • Extreme bondage **1.69×** <br><br> Soft caregiving sits *inside* a power-asymmetric frame — both registers, not one or the other | H5, H6 |
+| **It's about being attracted to older partners or age gaps** | • Both age arousal items (**partner older**, **age gap**) fail FDR-corrected significance entirely — no measurable difference <br> • Regression **is** the strongest single arousal signal in the survey: **2.76× more likely** for CGL respondents <br> • But regression = the *experience* of being treated as small, soft, cared-for — **not** attraction to a partner of any particular age <br> • The "cared-for" direction is what's arousing; partner age is unrelated | H6 |
+
+### Additional findings
+
+- **CGL respondents want an asymmetric experience.** They want to feel powerless or vulnerable (15.3% vs 11.4%), or humiliation (3.5% vs 1.2% — nearly 3× more common), while wanting their partner to feel the *opposite* — power or control (+1.4 points). And they care *less* about mutual states: eagerness or desire drops 6.4 points (28.8% vs 35.2%); love or romance drops 2.5 points (14.1% vs 16.6%). The desire is for complementary, not shared, emotions.
+
+- **The asymmetry shows up in role preference.** All 21 surveyed roles tilt CGL, but caregiving-shaped ones tower above the rest: caretaker/caretakee dynamics (20% vs 5% — a **4× difference, the largest single soft-erotic gap in the survey**), babysitter (+10.7pp), teacher (+8.6pp), doctor (+6.6pp).
+
+- **A striking pairing: high non-consent fantasy *and* high enthusiastic consent.** Non-consent fantasy (+13.4pp) and enthusiastic consent (+5.3pp) are *both* elevated for CGL respondents. These aren't in tension — they're the architecture of the kink: an intense, fantasy-coded power dynamic inside a clearly-consented frame.
+
+**The core finding:** CGL is best understood as a relational-emotional preference — soft caregiving inside a power-asymmetric frame, explicitly consented to between adults. It's not a personality type. It's a way of relating.
 
 ---
 
@@ -32,21 +51,13 @@ The Caregiver/Little (CGL) pattern does not describe a personality. It describes
 
 ![OCEAN and Powerlessness — effect size comparison between CGL-positive and CGL-negative respondents](figures/story_01_personality.png)
 
-### What we see
+- **Personality traits don't differ between groups.** I analyzed the Big Five (openness, conscientiousness, extraversion, neuroticism, agreeableness) — the standard personality model. CGL respondents score the same as everyone else.
+- **Beliefs about control don't differ either.** Whether CGL respondents believe they have less control over their lives — what psychologists call "locus of control" — shows no difference between groups when evaluating the powerlessness variable differentation.
+- **The differences are smaller than random variation.** The largest difference across all six measures is about 0.04 standard deviations. That's smaller than the normal fluctuation you'd see within any group.
+  - **With 4K+ respondents, even a tiny difference shows as "statistically significant."** So p-values are useless here. What matters is whether the difference *matters in real life*. It doesn't.
 
-- **Personality traits don't differ between groups.**
-  - I tested the Big Five (openness, conscientiousness, extraversion, neuroticism, agreeableness) — the standard personality model. CGL respondents score the same as everyone else.
-- **Beliefs about control don't differ either.**
-  - I also tested whether CGL respondents believe they have less control over their lives. They don't. This belief — what psychologists call "locus of control" — shows no difference between groups.
-- **The differences are smaller than random variation.**
-  - The largest difference across all six measures is about 0.04 standard deviations. That's tiny — smaller than the normal fluctuation you'd see within any group.
-
-### Why the statistics matter
-
-- **With 4,000+ people surveyed, even a tiny difference will show as "statistically significant."** So p-values are useless here. What matters is: does the difference *matter in real life*? And it doesn't.
-- **The bottom line.** CGL identification is not about who you are as a person. It's about the kind of relationship you want — which we'll see shows up loud and clear in the next sections.
-
-> **The takeaway:** If personality doesn't predict CGL, then CGL must be about something else — how people relate to their partners, what emotions they seek, and what kind of content they're drawn to.
+> **The myth this kills:** "CGL is a personality type" and "littles are immature or broken." Neither shows up.
+> **The takeaway:** Personality doesn't predict CGL. The signal must live somewhere else — in how people relate, what they want to feel, what they're drawn to.
 
 ---
 
@@ -56,19 +67,10 @@ The Caregiver/Little (CGL) pattern does not describe a personality. It describes
 
 ![What CGL vs non-CGL respondents most want to feel — and most want their partner to feel](figures/story_02_emotion.png)
 
-### What we see
-
-- **CGL respondents want to feel powerless or vulnerable more often.**
-  - Powerlessness or vulnerability: 15.3% (CGL) vs 11.4% (non-CGL) — a 3.9-point jump.
-  - Humiliation: 3.5% (CGL) vs 1.2% (non-CGL) — three times more common.
-- **But they want their partner to feel the opposite.**
-  - When asked what they want their partner to feel, CGL respondents more often pick power/control (+1.4 points).
-  - In other words: they want *different* emotional positions, not the same one.
-- **CGL respondents care less about mutual excitement or romance.**
-  - Eagerness or desire: 28.8% (CGL) vs 35.2% (non-CGL) — a 6.4-point drop.
-  - Love or romance: 14.1% (CGL) vs 16.6% (non-CGL) — a 2.5-point drop.
-- **The pattern is consistent: CGL is about opposite feelings, not shared ones.**
-  - One person feeling vulnerable while the other feels protective. One person feeling small while the other feels powerful. This is the emotional architecture of caregiving dynamics.
+- **CGL respondents want to feel powerless or vulnerable more often.** 15.3% vs 11.4% — a 3.9-point jump. Humiliation: 3.5% vs 1.2% — three times more common.
+- **But they want their partner to feel the opposite.** When asked what they want their partner to feel, CGL respondents more often pick power/control (+1.4 points). They want *different* emotional positions, not the same one.
+- **They care less about mutual excitement or romance.** Eagerness or desire: 28.8% vs 35.2% — a 6.4-point drop. Love or romance: 14.1% vs 16.6% — a 2.5-point drop.
+- **The pattern is consistent: opposite feelings, not shared ones.** One person feels vulnerable while the other feels protective. One feels small while the other feels powerful. That's the emotional architecture of caregiving dynamics.
 
 > **The takeaway:** CGL respondents are looking for *complementary* emotional experiences, not mutual ones. That's the emotional signature of caregiving.
 
@@ -80,24 +82,12 @@ The Caregiver/Little (CGL) pattern does not describe a personality. It describes
 
 ![Dominance / Submission preference distribution by CGL group](figures/story_03_ds_preference.png)
 
-### What we see
+- **CGL respondents are more likely to be submissive — but only by 6 points.** CGL: 44% sub / 25% switch-equal / 30% dom. Non-CGL: 38% sub / 29% switch-equal / 34% dom.
+- **Three in ten CGL respondents are dominant.** About a quarter are switches or prefer equal partnerships. Even within CGL, "totally submissive" is not the norm.
+- **The pattern is real but small.** The groups genuinely differ in a submissive direction — but the difference is small compared to the variation within each group.
 
-- **CGL respondents are more likely to be submissive, but only by 6 percentage points.**
-  - CGL respondents: 44% submissive, 25% switch/equal, 30% dominant.
-  - Non-CGL respondents: 38% submissive, 29% switch/equal, 34% dominant.
-- **Three in ten CGL respondents are dominant.**
-  - About a quarter are switches or prefer equal partnerships.
-  - Even among CGL respondents, "totally submissive" is not the norm.
-- **The pattern is real — it checks out statistically.**
-  - The groups genuinely differ in a submissive direction.
-  - But the differences are small compared to how much variation exists within each group.
-
-### Why this matters
-
-- **A stereotype says: CGL = dominant.** The data says: CGL respondents *trend* submissive, but a high percentage of them are doms and switches as well.
-- **The small size of the difference relative to the spread within groups** means that knowing someone is CGL doesn't tell you much about their D/S preference. It tilts the odds slightly, but it doesn't lock anyone into a box.
-
-> **The takeaway:** CGL is compatible with dominance, submission, and switches. Don't assume.
+> **The myth this kills:** Two opposite stereotypes — "CGL = dom controlling a sub" and "CGL = submissive identity, full stop." Both fall apart. CGL is compatible with dominance, submission, and switches.
+> **The takeaway:** Knowing someone is CGL doesn't tell you much about their D/S preference. It tilts the odds slightly. It doesn't lock anyone in.
 
 ---
 
@@ -107,170 +97,79 @@ The Caregiver/Little (CGL) pattern does not describe a personality. It describes
 
 ![Role-fantasy gaps by CGL group — top 12 of 21 surveyed roles](figures/story_04_roles.png)
 
-### What we see
-
-- **CGL respondents want *every* kind of role more often than non-CGL respondents.**
-  - Across 21 different role categories, there isn't a single one where non-CGL respondents lead.
-  - CGL respondents just have broader role-fantasy interests overall.
-- **But certain roles stand out — the caregiving ones.**
-  - Babysitter: +10.7 percentage points (CGL 35.3% vs non-CGL 24.6%)
-  - Maid: +9.8 percentage points
-  - Student: +9.4 percentage points
-  - Teacher: +8.6 percentage points
-  - Doctor: +6.6 percentage points
-- **One item towers above everything else: the caretaker/caretakee dynamic.**
-  - 20% of CGL respondents endorse it vs. 5% of non-CGL respondents.
-  - That's a **fourfold difference** — the single biggest gap in the entire soft-erotic preference set.
-  - This is the structural core. The specific costumes (maid, student, etc.) are flexible; the caregiving relationship is not.
+- **CGL respondents want *every* kind of role more often than non-CGL respondents.** Across 21 different role categories, there isn't a single one where non-CGL respondents lead. CGL respondents just have broader role-fantasy interests overall.
+- **Certain roles stand out — the caregiving ones.** Babysitter +10.7pp (35.3% vs 24.6%), Maid +9.8pp, Student +9.4pp, Teacher +8.6pp, Doctor +6.6pp.
+- **One item towers above everything else: the caretaker/caretakee dynamic.** 20% (CGL) vs 5% (non-CGL) — a **fourfold difference**, the single biggest gap in the entire soft-erotic preference set.
+- **This is the structural core.** The specific costumes (maid, student, teacher) are flexible. The caregiving relationship is not.
 
 > **The takeaway:** CGL isn't about a specific fantasy outfit. It's about a caregiving relationship structure where one person is being looked after.
 
 ---
 
-## Highlight 5 · What "Soft Erotic" Really Means for CGL
+## Highlight 5 · What "Emotional Sexual Experience" Really Means for CGL
 
 > **One item towers above the rest: caretaker/caretakee dynamics. CGL respondents endorse it at 20%, non-CGL at 4.6% — a 4× difference. Everything else in the soft-erotic cluster is elevated too, but this is the only one that *defines* CGL.**
 
 ![Soft-erotic preferences sliced by CGL Interest](figures/story_05_soft_erotic.png)
 
-### What we see
+- **Caretaker/caretakee dynamics is the standout.** 20% (CGL) vs 4.6% (non-CGL) — a 15.5-point gap. The **largest single preference gap in here is** a 4.4× difference.
+- **Other experiences are popular too, but more modestly.** Affection: 31.4% vs 24.9% (+6.4). Cuddling: 31.0% vs 25.2% (+5.8). Romance: 31.1% vs 25.0% (+6.1). Sensual healing, therapeutic experiences: all +5–6 points.
+- **Enthusiastic consent is elevated too — and it'll matter in Highlight 6.** 27.4% vs 22.1% (+5.3 points). Hold onto this: CGL respondents *also* over-endorse consensual non-consent fantasy by +13.4 points. Both signals point the same direction.
+- **None of these swing the other way.** CGL respondents are more into tender, caring experiences across the board. But the caretaker dynamic is the *only* one that's dramatically, distinctively CGL.
 
-- **Caretaker/caretakee dynamics is the standout.**
-  - 20% of CGL respondents vs. 4.6% of non-CGL respondents endorse it.
-  - This 15.5-point gap is the **largest single preference gap in the soft-erotic block**.
-  - That's a 4.4× difference — CGL respondents are much more likely to want this.
-- **Other soft-erotic items are popular with CGL respondents too, but more modestly.**
-  - Affection: 31.4% (CGL) vs 24.9% (non-CGL) — +6.4 points
-  - Cuddling: 31.0% vs 25.2% — +5.8 points
-  - Romance: 31.1% vs 25.0% — +6.1 points
-  - Sensual healing, therapeutic experiences: all +5–6 points
-- **None of these swing the other direction.**
-  - CGL respondents are more into tender, caring, affectionate experiences across the board.
-  - But the caretaker dynamic is the *only* one that's dramatically, distinctively CGL.
-
-### What this tells us
-
-- **CGL respondents do like tender, sensual, caring experiences — but that's not what makes them CGL.**
-- **What makes them CGL is the caretaker relationship itself.** The person being cared for, the person taking care. That's the defining feature.
-
-> **The takeaway:** If soft-erotic = tenderness, gentleness, affection, then CGL respondents are soft-erotic. But the real signal is the caregiving *relationship*, not just softness.
+> **The myth this kills:** "It's just wholesome soft kink." CGL does sit on the soft side — but the relational structure (one person caring for another) is the defining feature, not generic tenderness.
+> **The takeaway:** Soft-erotic isn't what makes someone CGL. The caretaker *relationship* is.
 
 ---
 
 ## Highlight 6 · What CGL Respondents Want Sexually
 
-### 6a · Sexual Acts & Positions
+This highlight has three pieces: which **acts** CGL respondents prefer, which **scenes** they prefer, and what they find **arousing**. The biggest signal lives in scenes and arousal — not in the mechanics of specific acts.
 
-> **Vaginal fingering is universal; fingering mouths is 8.5 percentage points higher for CGL. The sex-act side of the signal is real but small — certain acts matter more than others.**
+### 6a · Acts & positions
+
+> **Vaginal fingering is universal; fingering mouths is 8.5 points higher for CGL. The act-level signal is real but small.**
 
 ![NSFW endorsements — sexual acts + positions, top items by CGL+ vs CGL− gap](figures/story_06a_nsfw_acts_positions.png)
 
-### What we see
+- **The acts CGL respondents prefer most are face- and control-focused.** Fingering mouths: 52.9% vs 44.5% (+8.5). Facefucking: 69.9% vs 62.8% (+7.1). Facesitting: 61.5% vs 55.6% (+5.9). Spanking: 72.3% vs 66.7% (+5.6). Facials: 58.9% vs 53.7% (+5.2).
+- **Positions show smaller differences.** Spooning: +5.0. Reverse cowgirl: +4.9. Most other positions: +2–4 points.
+- **Baseline acts are nearly universal.** Vaginal fingering, oral sex, standard intercourse: 70–85% in both groups, with almost no gap. The question isn't "is CGL different sexually?" but "which subset of acts?"
 
-- **The acts that CGL respondents prefer most are face and control-focused.**
-  - Fingering mouths: 52.9% (CGL) vs 44.5% (non-CGL) — **+8.5 points**
-  - Facefucking: 69.9% vs 62.8% — +7.1 points
-  - Facesitting: 61.5% vs 55.6% — +5.9 points
-  - Spanking: 72.3% vs 66.7% — +5.6 points
-  - Facials: 58.9% vs 53.7% — +5.2 points
-- **Positions show smaller differences.**
-  - Spooning: 57.6% vs 52.7% — +5.0 points
-  - Reverse cowgirl: 54.5% vs 49.6% — +4.9 points
-  - Most other positions: +2–4 points.
-- **The baseline acts are nearly universal.**
-  - Vaginal fingering, oral sex, standard intercourse: 70–85% in both groups, with almost no gap.
-  - So the question isn't "is CGL different sexually?" but "which subset of acts does CGL prefer?"
+> **The takeaway:** CGL respondents like face-focused and control-focused acts more, but most sexual acts are popular across all groups. The bigger story is at the *scene* level.
 
-### What this means
+### 6b · Scenes (the real signal)
 
-- **The act-level signal exists but it's modest.** The CGL pattern here is real but small compared to other findings.
-- **The bigger story is at the preference level (next section).** Sexual acts matter less than what *kind* of scene CGL respondents are looking for.
-
-> **The takeaway:** CGL respondents like face-focused and control-focused acts more, but most sexual acts are popular across all groups.
-
-### 6b · What Kind of Scene (The Real Signal)
-
-> **Gentleness and consensual-non-consent fantasy are the two largest preference gaps for CGL respondents — 13.8 and 13.4 percentage points. The scene is soft inside an asymmetric frame.**
+> **Gentleness and consensual non-consent fantasy are the two largest preference gaps for CGL respondents — 13.8 and 13.4 points. The scene is soft inside an asymmetric frame.**
 
 ![NSFW endorsements — common + uncommon preferences, top items by CGL+ vs CGL− gap](figures/story_06b_nsfw_common_uncommon.png)
 
-### What we see
-
-- **The biggest gaps show up when you ask about *scene preference*, not specific acts.**
-  - Gentleness: 64.3% (CGL) vs 50.5% (non-CGL) — **+13.8 points**
-  - Consensual non-consent (CNC) fantasy: 61.6% vs 48.2% — **+13.4 points**
-  - Power dynamics & dominance/submission: 71.9% vs 60.0% — +11.9 points
-  - Humiliation: 37.2% vs 25.5% — +11.7 points
-  - Sadomasochism: 46.9% vs 35.8% — +11.2 points
-- **Less common preferences also show big CGL gaps.**
-  - Mental alteration: 34.1% vs 23.2% — +10.9 points
-  - Bodily secretions: 33.6% vs 23.9% — +9.7 points
-  - Nonstandard objects: 34.0% vs 24.2% — +9.8 points
-- **Gentleness and non-consent together tell the whole story.**
-  - These aren't contradictions. They're the two sides of CGL.
-  - Gentleness = the caring, nurturing emotional register.
-  - Non-consent fantasy = the power-asymmetric frame the scene happens inside.
-  - Together: *soft caregiving inside a power-unequal structure.* That's the CGL scene.
-
-### What this means
-
-- **The real CGL signal isn't about specific acts — it's about scene framing.**
-- **These gaps (+11–14 points) are much larger than the act-level gaps (+5–8 points).**
-- **If you want to understand CGL sexually, pay attention to what kind of emotional scene people want, not the mechanics of what they do.**
+- **The biggest gaps appear at the *scene* level, not the act level.** Gentleness: 64.3% vs 50.5% (+13.8). Consensual non-consent (CNC) fantasy: 61.6% vs 48.2% (+13.4). Power dynamics & D/s: 71.9% vs 60.0% (+11.9). Humiliation: 37.2% vs 25.5% (+11.7). Sadomasochism: 46.9% vs 35.8% (+11.2).
+- **Less common preferences also show big CGL gaps.** Mental alteration: +10.9. Bodily secretions: +9.7. Nonstandard objects: +9.8.
+- **Gentleness and non-consent together tell the whole story.** Not contradictions — two sides of CGL. Gentleness = the caring, nurturing register. Non-consent fantasy = the power-asymmetric frame the scene happens inside. Together: *soft caregiving inside a power-unequal structure.* That's the CGL scene.
+- **Scene gaps (+11–14 points) are much larger than act-level gaps (+5–8 points).** If you want to understand CGL sexually, look at the kind of scene people want, not the mechanics of what they do.
 
 > **The takeaway:** CGL respondents want scenes that are tender on the inside and asymmetric on the outside — gentleness wrapped in a power dynamic.
 
-### 6c · What Arouses CGL Respondents (The Clearest Signal)
+### 6c · Arousal (the clearest signal)
 
 > **The strongest single CGL arousal signal is regression — being treated as small, soft, cared-for. CGL respondents are 2.76× as likely to find this arousing. Partner age doesn't matter at all.**
 
 ![Kink-specific arousal — response distribution + forest plot of odds ratios, CGL+ vs Rest](figures/story_06c_arousal_dual_panel.png)
 
-### What we see
+- **Regression is the dominant signal.** 2.76× as many CGL respondents find it arousing. The **strongest single arousal finding for CGL in the entire survey.** Regression = arousal to being treated as smaller, softer, more vulnerable. Being cared-for.
+- **Eight more items show strong arousal differences for CGL respondents.** Full-time power exchange (2.32×), master/slave (2.39×), mindbreak / mental domination (2.02×), obedience (2.21×), voyeurism (2.27× and 2.03×), extreme bondage (1.69×), progression / age-play progression (1.69×). The thread: structured power asymmetry, plus the "being cared-for" direction.
+- **Five more items show weaker but real arousal differences.** Worshipping, exhibitionism, medium bondage, etc. — all trend CGL, smaller differences.
+- **Four items show no difference.** Partner being older: **no difference.** Age gap between partners: **no difference.** Light bondage: no difference. Humiliation arousal as a binary yes/no: no difference. (Humiliation shows up big on the preference question, just not on this arousal test — almost all kink respondents rate humiliation as at least slightly arousing, so the yes/no test loses power. It's a measurement quirk, not an absence of signal.)
 
-- **Regression is the dominant signal.**
-  - 2.76× as many CGL respondents find it arousing (odds ratio).
-  - This is the **strongest single arousal finding for CGL** in the entire survey.
-  - Regression = arousal to being treated as smaller, softer, more vulnerable. Being cared-for.
-- **Eight more items show strong arousal differences for CGL respondents (marked as "strong effect" on the chart).**
-  - Full-time power exchange (2.32×)
-  - Master/slave dynamics (2.39×)
-  - Mindbreak / mental domination (2.02×)
-  - Obedience (2.21×)
-  - Voyeurism (watching or being watched) (2.27× and 2.03×)
-  - Extreme bondage (1.69×)
-  - Progression / age-play progression (1.69×)
-  - **The thread:** Structured power asymmetry. Being controlled, directed, in an unequal dynamic. Plus regression — the "being cared-for" direction.
-- **Five more items show weaker but real arousal differences (marked as "weak effect").**
-  - Worshipping, exhibitionism, medium bondage, etc. All trend CGL, but smaller differences.
-- **Four items show no difference (marked as "no effect").**
-  - Partner being older: **no difference**
-  - Age gap between partners: **no difference**
-  - Light bondage: no difference
-  - Humiliation arousal (as a binary yes/no): no difference
-  - (Humiliation shows up big on the kink-preference question, just not on arousal. This is a measurement quirk: almost all kink respondents rate humiliation as at least slightly arousing, so the yes/no test loses power. The preference test captures the real difference.)
-
-### The Big Picture
-
-- **CGL arousal is regression and structured power exchange.**
-- **CGL arousal has nothing to do with partner age,** despite stereotypes.
-- **These findings are strong and have been checked for false positives** (Benjamini-Hochberg FDR correction across 18 items).
-
+> **The myth this kills:** Two big ones. (1) "CGL is just cuddling, not real BDSM" — master/slave, full-time power, and extreme bondage all show strong arousal differences. (2) "CGL is about partner age" — both age items fail entirely after correcting for false positives.
 > **The takeaway:** CGL respondents are aroused by being cared-for and by structured power imbalance. They're not aroused by partner age. That's a stereotype, not data.
 
----
+### 6d · The cross-cutting pairing
 
-## What the Data Actually Says (All Six Highlights Together)
+> **Non-consent fantasy (+13.4pp) and enthusiastic consent (+5.3pp) are *both* elevated for CGL respondents. These aren't in tension — they're the architecture of the kink.**
 
-Put these findings side by side and they tell one coherent story — and it's not the stereotype.
-
-- **CGL is not who you are.** It doesn't show up in personality, locus of control, or who people are as individuals.
-- **CGL is how you relate.** It's an emotional and relational structure built around one person caring for another.
-- **It's asymmetric, not weaker.** CGL respondents want opposite emotions from their partners, not shared ones. And they tend submissive, but a third are dominant anyway.
-- **The pattern is consistent across preferences.** Caregiver/little roles are 4× more common. Gentleness and non-consent fantasies are both elevated. Regression and structured power are the arousal signals.
-- **It's not about partner age.** That's a stereotype unsupported by data.
-
-**The core finding:** CGL is best understood as a relational-emotional preference, defined by a caregiving structure and an asymmetric emotional profile, between consenting adults. It's not a personality type. It's a way of relating.
+An intense, fantasy-coded power dynamic inside an explicitly-consented frame. The non-consent is fictional; the consent is real. CGL respondents value both at higher rates than non-CGL respondents, which is exactly what you'd expect from a kink that runs heavy emotional content through an explicit-negotiation frame.
 
 ---
 
@@ -512,8 +411,6 @@ n CGL+ = 2,845; n CGL− = 1,295. Sorted by |Δ|.
 
 **Insight (endorsements — acts + positions block).** Sexual-act gaps are smaller and concentrated on a coherent face/mouth/control-flavoured subset: fingering mouths (+8.5pp, h = 0.169), facefucking (+7.1pp, h = 0.151), fisting (+6.0pp, h = 0.154), facesitting (+5.9pp, h = 0.121), spanking (+5.6pp, h = 0.121), facials (+5.2pp, h = 0.106). Positions are even smaller (top items at h < 0.10). Universally-popular acts (vaginal fingering, oral, standard intercourse) show negligible CGL-vs-CGL− gaps. The CGL signal at the act level is not "are you into sex" — it is "which thin subset of acts carry a power-dynamic flavour."
 
-**Insight (arousal scale).** Across 18 power-dynamic, bondage, voyeurism, and age-related arousal items (0–5 scale, binarised at ≥ 1), **regression** is the single strongest CGL signal: OR = 2.76× (95% CI [2.41, 3.18]), Cohen's h = +0.50, FDR-adjusted p < 0.001. Nine items reach the moderate-effect tier (|h| ≥ 0.20 with significant FDR-adjusted p): regression, fulltimepower, voyeurother, masterslave, mindbreak, voyeurself, progression, extremebondage, obedience. Four items **fail FDR-corrected significance**: older, lightbondage, humiliation, agegap.
-
 **Insight (arousal scale).** Across 18 power-dynamic, bondage, voyeurism, and age-related arousal items (0–5 scale, binarised at ≥ 1), **regression** is the single strongest CGL signal: OR = 2.76× (95% CI [2.41, 3.18]), Cohen's h = +0.50, FDR-adjusted p < 0.001. Nine items reach the moderate-effect tier (|h| ≥ 0.20 with significant FDR-adjusted p): regression, fulltimepower, voyeurother, masterslave, mindbreak, voyeurself, progression, extremebondage, obedience. Four items **fail FDR-corrected significance**: older, lightbondage, humiliation (as a binary 0-vs-≥1 arousal item — note this differs from the common_humiliation endorsement, which *is* significant), and agegap.
 
 **Relevance.** This chapter is the most defensible empirical statement of "what CGL content preference actually looks like." It locates the strongest endorsement signal in the **common-preferences block** (scene framing, not specific acts), the strongest single-item arousal signal in **regression** (consistent with the caring-direction story), and confirms that partner-age items (older, agegap) are **not** CGL-distinguishing once multiple comparisons are corrected for. It also clarifies the humiliation-measurement difference: significant on the common-prefs endorsement test, null on the binary arousal-scale test, for measurement-specific reasons (ceiling effect at ≥1 on the arousal scale).
@@ -607,14 +504,15 @@ Sorted by effect size. **OR** is the odds ratio of CGL+ vs Rest endorsing the it
 
 The six chapters converge on a single account of CGL:
 
-1. **Not a personality (Ch. 1).** OCEAN and powerlessness-as-locus-of-belief do not differentiate CGL respondents from non-CGL respondents at any substantive effect size (all |d| < 0.05).
-2. **Emotionally asymmetric (Ch. 2).** CGL respondents shift toward unequal-position emotions (vulnerability + power, safety + protection) and away from mutual-pursuit emotions (eagerness, romance).
-3. **Submissive-tilting, but not submissive (Ch. 3).** D/S preference distinguishes the groups statistically (p < 0.001) but with negligible magnitude (η² = 0.0013).
-4. **Built around caregiving roles (Ch. 4).** CGL+ over-endorses every surveyed role; the largest gaps cluster on caregiving-shaped scenarios.
+1. **Not a personality (Ch. 1).** OCEAN and powerlessness-as-locus-of-belief do not differentiate CGL respondents from non-CGL respondents at any substantive effect size (all |d| < 0.05). No stereotyped personality or belief profile applies.
+2. **Emotionally asymmetric (Ch. 2).** CGL respondents shift toward unequal-position emotions (vulnerability + power, safety + protection) and away from mutual-pursuit emotions (eagerness −6.4pp, romance −2.5pp). The desire is for complementary, not shared, feelings.
+3. **Submissive-tilting, but not submissive (Ch. 3).** D/S preference distinguishes the groups statistically (p < 0.001) but with negligible magnitude (η² = 0.0013) — the lean is real but small, with ~30% of CGL+ identifying as dominant.
+4. **Built around caregiving roles (Ch. 4).** CGL+ over-endorses every surveyed role; the largest gaps cluster on caregiving-shaped scenarios (babysitter +10.7pp, teacher +8.6pp, doctor +6.6pp).
 5. **Caretaker / caretakee dynamics is the preference-level signature (Ch. 5).** 20% vs 5% endorsement, h ≈ 0.498 (medium effect) — the largest single soft-erotic signal in the survey and the mechanistic bridge between role-fantasy and NSFW content.
-6. **Content signal is gentleness + nonconsent + regression + structured power exchange (Ch. 6).** Common-preference endorsements concentrate on the soft-register and asymmetric-frame items together; the strongest arousal-scale item is regression (OR 2.76×, h = +0.50). Partner-age items fail FDR-corrected significance.
+6. **Content signal is gentleness + nonconsent + regression + structured power exchange (Ch. 6).** Common-preference endorsements concentrate on the soft-register and asymmetric-frame items together (gentleness +13.8pp, nonconsent +13.4pp); the strongest arousal-scale item is regression (OR 2.76×, h = +0.50). Partner-age items fail FDR-corrected significance.
+7. **Non-consent fantasy and enthusiastic consent are *both* elevated (Ch. 5–6 bridge).** Nonconsent fantasy (+13.4pp, Ch. 6) and enthusiastic consent (+5.3pp, Ch. 5) shift in the same direction, not opposite directions. These items aren't in tension — they are the structural pairing the kink is built on: an intense fantasy-coded power dynamic inside an explicitly-consented frame.
 
-The unifying frame: **CGL is best understood as a relational-emotional kink, defined by a caregiving structure and an asymmetric emotional profile, with a content signal that pairs soft caregiving content with a power-asymmetric frame — between consenting adults.** Personality is not a useful lens. Relationship structure, emotional grammar, and content asymmetry are.
+The unifying frame: **CGL is best understood as a relational-emotional kink, defined by a caregiving structure and an asymmetric emotional profile, with a content signal that pairs soft caregiving content with a power-asymmetric frame inside an explicit-consent frame — between consenting adults.** Personality is not a useful lens. Relationship structure, emotional grammar, and content asymmetry are.
 
 ---
 
@@ -634,8 +532,7 @@ The unifying frame: **CGL is best understood as a relational-emotional kink, def
 | Test / Metric | What it does | What it's used for | How to read the results | Where used |
 |---|---|---|---|---|
 | **Cohen's d** | Standardised mean difference between two groups in pooled-SD units; sample-size-independent | How different two groups are on a scale from "the same" to "completely different" — no math degree needed | Bigger number = bigger difference. Anything under 0.10 means "so close it barely matters." 0.20–0.50 means "you'd notice the difference." 0.50+ means "obvious difference." | Ch. 1 |
-| **Cohen's h** | Base-rat
-e-normalised effect size for difference in proportions: `h = 2·arcsin(√p1) − 2·arcsin(√p2)` | Does one group pick something way more often than the other? This measures "how much more." | Bigger number = bigger difference in what two groups like. Under 0.10 means "about the same." 0.20–0.50 means "noticeably different." 0.50+ means "really different tastes." | Ch. 4 (caretaker), Ch. 5 (endorsements + arousal) |
+| **Cohen's h** | Base-rate-normalised effect size for difference in proportions: `h = 2·arcsin(√p1) − 2·arcsin(√p2)` | Does one group pick something way more often than the other? This measures "how much more." | Bigger number = bigger difference in what two groups like. Under 0.10 means "about the same." 0.20–0.50 means "noticeably different." 0.50+ means "really different tastes." | Ch. 4 (caretaker), Ch. 5 (endorsements + arousal) |
 | **Kruskal-Wallis H** | Non-parametric 3-group omnibus on ranked/ordinal data | Are these three groups ranked differently? (Like, do they order from most-to-least differently?) | Bigger H number + smaller p-value (p < 0.05) = "yes, the groups rank differently." The exact number doesn't matter; just "is p small?" | Ch. 3 |
 | **Mann-Whitney U** | Non-parametric 2-group test on ranked/ordinal data | Are two ranked groups different? | Smaller p-value (p < 0.05) = "yes, they're different." Pair this with Cohen's d or h to see if the difference is tiny or huge. | Ch. 3 (pairwise follow-ups) |
 | **Bonferroni correction** | Multiplies each p-value by the number of comparisons; conservative family-wise error control | If you test the same data 10 times, you'll eventually get a fake "yes" by luck. This correction makes it harder to get fooled. | After correction, p-values get bigger. This means a "yes" is a "yes" you can trust. | Ch. 3 (3 pairwise comparisons) |

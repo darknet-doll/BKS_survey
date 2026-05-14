@@ -4,13 +4,13 @@
 
 ---
 
-## Research Goal & Data Source
+## Goals & Data Source
 
-**What I wanted to find out:** Are there real, measurable differences between people who identify with or enjoy caregiving dynamics (CGL) and those who don't? And if so, what kind of differences are they?
+**Research Goals:** Are there real, measurable differences between people who identify with or enjoy caregiving dynamics (CGL) and those who don't? And if so, what kind of differences are they?
 
 **Data source:** The Big Kink Survey, created and administered by [Aella](https://aella.substack.com/p/heres-my-big-kink-survey-dataset). The survey collected responses from approximately 970,000 participants and covers sexual interests, personality traits, demographics, and relationship preferences. I analyzed a subset focused on caregiving dynamics:
 
-- **15,000+** respondents total who answered the CGL question
+- **15,000+** respondents total
 - **2,845** who identify with caregiving dynamics (CGL-positive)
 - **1,295** who don't (CGL-negative)
 
@@ -18,7 +18,7 @@
 
 ## Findings
 
-People often assume that a kink reveals who someone *is* — their personality, their hidden self, the truth underneath the surface. When I analyzed the CGL data through that lens, it fell apart.
+People often assume that a kink reveals who someone *is* — their personality, their hidden self, the truth underneath the surface. When analyzed those assumptions using data on the people who desire CGL dynamics against those who don't, that assumption falls apart.
 
 > **TL;DR.** CGL isn't a personality type — it's a *way of relating*. CGL respondents lean (mildly) submissive, want emotionally asymmetric experiences with a caregiving structure, and pair high non-consent fantasy with high enthusiastic consent. The six highlights below trace this story from personality nulls → emotional asymmetry → roles → scenes → arousal signals.
 

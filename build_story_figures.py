@@ -163,94 +163,109 @@ def or_with_ci(a, b, c, d, z=1.96):
 # ---------------------------------------------------------------------------
 
 def figure_personality(df: pd.DataFrame) -> None:
-    # Two conceptually distinct constructs: OCEAN traits (Big Five personality)
-    # and Powerlessness (a locus-of-belief measure, NOT a personality trait).
-    # We plot them in the same chart with a visual separator and grouped labels.
+    # 5-panel horizontal density distributions, one per OCEAN trait.
+    # CGL+ (hero pink) vs Rest (hairline gray) — distributions overlap almost perfectly.
     ocean_traits = [
         ("openness", "Openness"),
         ("consciensiousness", "Conscientiousness"),
         ("extroversion", "Extraversion"),
         ("neuroticism", "Neuroticism"),
         ("agreeableness", "Agreeableness"),
-    ]
-    belief = [
         ("powerlessness", "Powerlessness"),
     ]
-    cgl = df[df["cgl_flag"] == "True"]
-    non = df[df["cgl_flag"] == "False"]
 
-    rows = []
+    cgl_plus = df[df["cgl_flag"] == "True"]
+    rest     = df[df["cgl_flag"] != "True"]
+    non      = df[df["cgl_flag"] == "False"]   # for Cohen's d annotation only (CGL+ vs CGL−)
+
+    fig, axes = plt.subplots(1, 6, figsize=(17, 6.5), sharey=True, sharex=True)
+
+    # Collapse the raw -6..+6 OCEAN score into a 3-point Agreement Scale:
+    #   negative score → -1 (Disagree),  0 → 0 (Neutral),  positive score → +1 (Agree)
+    def to_agreement(series: pd.Series) -> np.ndarray:
+        v = series.dropna().to_numpy()
+        return np.sign(v).astype(int)
+
+    bin_centres = np.array([-1, 0, 1])
+    bar_h       = 0.38
+
+    # First pass: compute all percentages so we can share an x-axis range
+    panel_data = []
+    x_max = 0.0
     for col, label in ocean_traits:
-        rows.append({"trait": label, "group": "OCEAN (personality)", "d": cohens_d(cgl[col], non[col])})
-    for col, label in belief:
-        rows.append({"trait": label, "group": "Powerlessness (locus of belief)",
-                     "d": cohens_d(cgl[col], non[col])})
-    plot = pd.DataFrame(rows)
+        cgl_a  = to_agreement(cgl_plus[col])
+        rest_a = to_agreement(rest[col])
+        cgl_pct  = np.array([100 * (cgl_a  == k).sum() / max(len(cgl_a),  1) for k in bin_centres])
+        rest_pct = np.array([100 * (rest_a == k).sum() / max(len(rest_a), 1) for k in bin_centres])
+        panel_data.append((col, label, cgl_pct, rest_pct))
+        x_max = max(x_max, cgl_pct.max(), rest_pct.max())
+    x_max = np.ceil(x_max / 10) * 10
 
-    fig, ax = plt.subplots(figsize=(12, 6.5))
+    for ax, (col, label, cgl_pct, rest_pct) in zip(axes, panel_data):
+        # Side-by-side horizontal bars: Rest below centre, CGL+ above centre
+        ax.barh(bin_centres - bar_h / 2, rest_pct, height=bar_h,
+                color=INK["hairline"], zorder=2,
+                label="Rest" if ax is axes[0] else None)
+        ax.barh(bin_centres + bar_h / 2, cgl_pct, height=bar_h,
+                color=ACCENT["hero"], zorder=3,
+                label="CGL+" if ax is axes[0] else None)
 
-    # Shade the "trivial" band (|d| < 0.10)
-    ax.axvspan(-0.10, 0.10, color=INK["surface"], alpha=0.8, zorder=0,
-               label="Trivial-effect band  |d| < 0.10")
-    ax.axvline(0, color=INK["secondary"], lw=1.0, ls="--", zorder=1)
+        # Direct value labels at bar ends (Rule 4: strip value axis, label directly)
+        for y, p in zip(bin_centres - bar_h / 2, rest_pct):
+            ax.text(p + 1.5, y, f"{p:.0f}%", ha="left", va="center",
+                    fontsize=9, color=INK["secondary"])
+        for y, p in zip(bin_centres + bar_h / 2, cgl_pct):
+            ax.text(p + 1.5, y, f"{p:.0f}%", ha="left", va="center",
+                    fontsize=9, fontweight="bold", color=INK["primary"])
 
-    # Plot OCEAN first (top), then a visual separator, then powerlessness
-    y_positions = []
-    y_cursor = 0
-    for _ in ocean_traits:
-        y_positions.append(y_cursor); y_cursor += 1
-    y_cursor += 0.6  # gap between groups
-    for _ in belief:
-        y_positions.append(y_cursor); y_cursor += 1
-
-    # All effects are trivial here; hairline gray with hero pink if one ever exceeds threshold
-    colors = [INK["hairline"] if abs(d) < 0.10 else ACCENT["hero"] for d in plot["d"]]
-    bars = ax.barh(y_positions, plot["d"], color=colors, edgecolor=INK["canvas"], zorder=2)
-    for bar, d, y in zip(bars, plot["d"], y_positions):
-        x = bar.get_width()
+        d = cohens_d(cgl_plus[col], non[col])
         ax.text(
-            x + (0.005 if x >= 0 else -0.005), y,
-            f"d = {d:+.3f}",
-            va="center", ha="left" if x >= 0 else "right",
-            fontsize=10, fontweight="bold", color=INK["primary"],
+            0.5, -0.16,
+            f"Cohen's d = {d:+.3f}  (trivial)",
+            transform=ax.transAxes, ha="center", va="top",
+            fontsize=9, color=INK["tertiary"], style="italic",
         )
 
-    ax.set_yticks(y_positions)
-    ax.set_yticklabels(plot["trait"], fontsize=12, fontweight="bold", color=INK["secondary"])
-    ax.invert_yaxis()
+        ax.set_title(label, fontsize=12, fontweight="bold",
+                     color=INK["primary"], pad=8)
+        ax.set_xlabel("% of group", fontsize=10, color=INK["secondary"], labelpad=22)
+        ax.set_yticks(bin_centres)
+        ax.set_yticklabels(["−1\nDisagree", "0\nNeutral", "+1\nAgree"],
+                           fontsize=10, fontweight="bold", color=INK["primary"])
+        ax.set_xlim(0, x_max + 15)
+        ax.tick_params(axis="y", colors=INK["primary"])
+        ax.tick_params(axis="x", labelsize=9, colors=INK["tertiary"])
+        ax.spines[["top", "right", "bottom"]].set_visible(False)
+        ax.spines["left"].set_color(INK["hairline"])
+        ax.set_xticks([])  # Rule 4: strip value axis on bar charts
 
-    # Group labels — plain text, no colored boxes
-    ax.text(
-        0.99, 0.95,
-        "OCEAN — personality traits",
-        transform=ax.transAxes,
-        ha="right", va="top", fontsize=10, fontweight="bold", color=INK["secondary"],
-    )
-    ax.text(
-        0.99, 0.18,
-        "Powerlessness — locus-of-belief\n(not a personality trait)",
-        transform=ax.transAxes,
-        ha="right", va="top", fontsize=10, fontweight="bold", color=INK["secondary"],
+    axes[0].set_ylabel("Agreement Scale", fontsize=11, color=INK["secondary"])
+
+    # Headline title — placed via fig.suptitle so layout reserves space for it.
+    fig.suptitle(
+        "Data distribution shows no significant difference\n"
+        "as to whether someone identifies with the OCEAN personality test",
+        x=0.005, y=0.995, ha="left", va="top",
+        fontsize=18, fontweight="bold", color=INK["primary"],
     )
 
-    ax.set_xlim(-0.25, 0.25)
-    ax.set_xlabel("Cohen's d   (CGL-positive minus CGL-negative, pooled-SD units)", fontsize=11)
-    ax.text(0, 1.08,
-            "Personality (OCEAN) and Powerlessness (locus of belief):\n"
-            "every CGL-vs-non-CGL difference falls inside the trivial-effect band",
-            transform=ax.transAxes,
-            fontsize=18, fontweight="bold", color=INK["primary"], va="bottom", ha="left")
-    ax.text(
-        -0.245, max(y_positions) + 0.7,
-        f"n CGL+ = {len(cgl):,}   ·   n CGL− = {len(non):,}   ·   "
-        "shaded band = |d| < 0.10 (trivial)",
+    # Legend below title, above axes (Rule 1)
+    fig.legend(
+        loc="upper left", bbox_to_anchor=(0.005, 0.89),
+        ncol=2, frameon=False, labelcolor=INK["secondary"], fontsize=11,
+    )
+
+    # Source / context note at the bottom
+    fig.text(
+        0.005, 0.005,
+        f"n CGL+ = {len(cgl_plus):,}   ·   n Rest = {len(rest):,}   "
+        f"(Rest = CGL− [{len(non):,}] + Unknown [{len(rest) - len(non):,}])   ·   "
+        "Cohen's d annotation compares CGL+ vs CGL−; all values fall in the trivial band (|d| < 0.10)",
         fontsize=9, color=INK["tertiary"], style="italic",
+        ha="left", va="bottom",
     )
-    ax.spines[["top", "right"]].set_visible(False)
-    ax.spines["left"].set_color(INK["hairline"])
-    ax.spines["bottom"].set_color(INK["hairline"])
-    ax.grid(axis="x", linestyle=":", alpha=0.4, color=INK["hairline"], zorder=0)
-    plt.tight_layout()
+
+    fig.tight_layout(rect=[0.0, 0.04, 1.0, 0.86])
     plt.savefig(FIG_DIR / "story_01_personality.png", **SAVE_KW)
     plt.close(fig)
 
@@ -297,9 +312,9 @@ def figure_emotion(df: pd.DataFrame) -> None:
     xmax = max(pct_left.values.max(), pct_right.values.max()) * 1.10
     fig, axes = plt.subplots(1, 2, figsize=(16, max(6, 0.5 * len(sort_order))), sharey=True)
     color_map = {
-        "False":   SEMANTIC["bad"],
-        "True":    SEMANTIC["good"],
-        "Unknown": INK["tertiary"],
+        "False":   INK["secondary"],   # dark gray
+        "Unknown": INK["hairline"],    # light gray
+        "True":    ACCENT["hero"],     # pink
     }
     size_map = {"False": 90, "True": 120, "Unknown": 80}
 
@@ -317,14 +332,20 @@ def figure_emotion(df: pd.DataFrame) -> None:
                 label=f"CGL = {flag}  (n={int(n_counts.get(flag, 0)):,})",
                 edgecolor=INK["canvas"], linewidth=1.2,
             )
-        # Gap annotation — outside the right spine, never overlapping data
+        # Gap annotation — outside the right spine; colored by sign
         _trans = blended_transform_factory(ax.transAxes, ax.transData)
         for i, cat in enumerate(pct.index):
             gap = pct.loc[cat, "True"] - pct.loc[cat, "False"]
-            ax.text(1.02, i, f"{gap:+.1f}pp",
+            if gap > 0:
+                gap_color = SEMANTIC["good"]
+            elif gap < 0:
+                gap_color = SEMANTIC["bad"]
+            else:
+                gap_color = INK["secondary"]
+            ax.text(1.02, i, f"{gap:+.1f}%",
                     transform=_trans,
                     ha="left", va="center", fontsize=9, fontweight="bold",
-                    color=INK["primary"], family="monospace", clip_on=False)
+                    color=gap_color, family="monospace", clip_on=False)
         ax.set_yticks(y_pos)
         ax.set_yticklabels(pct.index, fontsize=12, fontweight="bold", color=INK["secondary"])
         ax.set_xlabel("% within group", fontsize=11)
@@ -433,10 +454,10 @@ def figure_ds(df: pd.DataFrame) -> None:
                       ha="right", va="bottom", fontsize=11, fontweight="bold")
         ax_chart.text(-0.01, i - 0.08, f"(n = {n:,})", transform=trans,
                       ha="right", va="top", fontsize=9)
-    existing_ticks = ax_chart.get_xticks()
-    ax_chart.xaxis.set_major_locator(FixedLocator([t for t in existing_ticks if t != 0]))
-    ax_chart.set_xlabel('Percentage points (centered on "Switch/equal")')
-    ax_chart.spines[["top", "right", "left"]].set_visible(False)
+    ax_chart.set_xticks([])
+    ax_chart.set_xlabel("")
+    ax_chart.tick_params(axis="x", length=0)
+    ax_chart.spines[["top", "right", "left", "bottom"]].set_visible(False)
     ax_chart.set_title(
         "Dominance / Submission Preference by CGL Group",
         fontsize=16, fontweight="bold", loc="center", pad=70,
@@ -494,69 +515,105 @@ def figure_ds(df: pd.DataFrame) -> None:
 
 def figure_roles(df: pd.DataFrame) -> None:
     role_cols = [c for c in df.columns if c.startswith("role_")]
-    rows = []
     cgl = df[df["cgl_flag"] == "True"]
     non = df[df["cgl_flag"] == "False"]
-    n_cgl, n_non = len(cgl), len(non)
+    unk = df[df["cgl_flag"] == "Unknown"]
+    n_cgl, n_non, n_unk = len(cgl), len(non), len(unk)
+    rows = []
     for col in role_cols:
         name = col.replace("role_", "")
         p_cgl = cgl[col].sum() / n_cgl * 100
         p_non = non[col].sum() / n_non * 100
-        rows.append({"role": name, "cgl": p_cgl, "non": p_non, "gap": p_cgl - p_non})
-    plot = pd.DataFrame(rows).sort_values("gap", ascending=True)
+        p_unk = unk[col].sum() / n_unk * 100 if n_unk > 0 else 0.0
+        rows.append({"role": name, "cgl": p_cgl, "non": p_non, "unk": p_unk,
+                     "gap": p_cgl - p_non})
+    plot = pd.DataFrame(rows)
 
-    # Take the 12 roles with the largest absolute gap
-    plot = plot.iloc[(plot["gap"].abs().sort_values(ascending=False).head(12)).index]
-    plot = plot.sort_values("gap", ascending=True)
+    # Keep the 12 roles with the largest absolute CGL−CGL=False gap,
+    # then order by CGL=True desire % (highest at top).
+    plot = plot.iloc[plot["gap"].abs().sort_values(ascending=False).head(12).index]
+    plot = plot.sort_values("cgl", ascending=True)   # ascending → top-of-chart = highest
 
     # Add the caretaker dynamic from soft_erotic_ for the callout
     care_col = "soft_erotic_caretaker/caretakee dynamics"
     care_cgl = cgl[care_col].sum() / n_cgl * 100 if care_col in df.columns else None
     care_non = non[care_col].sum() / n_non * 100 if care_col in df.columns else None
 
-    fig, ax = plt.subplots(figsize=(13, max(7, 0.5 * len(plot))))
+    color_map = {
+        "False":   INK["secondary"],   # dark gray
+        "Unknown": INK["hairline"],    # light gray
+        "True":    ACCENT["hero"],     # pink
+    }
+    size_map = {"False": 90, "Unknown": 80, "True": 120}
+
+    fig, ax = plt.subplots(figsize=(14, max(7, 0.5 * len(plot))))
     y = np.arange(len(plot))
-    bar_h = 0.38
-    ax.barh(y - bar_h / 2, plot["cgl"], height=bar_h,
-            color=SEMANTIC["good"], edgecolor=INK["canvas"], label=f"CGL = True  (n={n_cgl:,})")
-    ax.barh(y + bar_h / 2, plot["non"], height=bar_h,
-            color=SEMANTIC["bad"], edgecolor=INK["canvas"], label=f"CGL = False  (n={n_non:,})")
+
+    # Connector line spans the min..max of the three group %s per row
     for i, (_, row) in enumerate(plot.iterrows()):
-        ax.text(row["cgl"] + 0.4, i - bar_h / 2,
-                f"{row['cgl']:.1f}%", va="center", fontsize=9, color=INK["primary"], fontweight="bold")
-        ax.text(row["non"] + 0.4, i + bar_h / 2,
-                f"{row['non']:.1f}%", va="center", fontsize=9, color=INK["primary"], fontweight="bold")
-    xmax = max(plot["cgl"].max(), plot["non"].max())
+        lo = min(row["cgl"], row["non"], row["unk"])
+        hi = max(row["cgl"], row["non"], row["unk"])
+        ax.plot([lo, hi], [i, i], color=INK["hairline"], lw=2.0, zorder=1)
+
+    # Draw Unknown first, then False, then True (pink) on top
+    ax.scatter(plot["unk"], y, color=color_map["Unknown"], s=size_map["Unknown"],
+               edgecolor=INK["canvas"], linewidth=1.2, zorder=2,
+               label=f"CGL = Unknown  (n={n_unk:,})")
+    ax.scatter(plot["non"], y, color=color_map["False"], s=size_map["False"],
+               edgecolor=INK["canvas"], linewidth=1.2, zorder=3,
+               label=f"CGL = False  (n={n_non:,})")
+    ax.scatter(plot["cgl"], y, color=color_map["True"], s=size_map["True"],
+               edgecolor=INK["canvas"], linewidth=1.2, zorder=4,
+               label=f"CGL = True  (n={n_cgl:,})")
+
+    # CGL=True direct % label (next to the pink hero dot)
+    xmax = max(plot["cgl"].max(), plot["non"].max(), plot["unk"].max())
     for i, (_, row) in enumerate(plot.iterrows()):
-        ax.text(
-            xmax * 1.18, i,
-            f"{row['gap']:+.1f}pp",
-            va="center", fontsize=10, fontweight="bold", color=INK["primary"],
-            family="monospace",
-        )
-    ax.set_xlim(0, xmax * 1.30)
+        ax.text(row["cgl"] + 0.6, i, f"{row['cgl']:.1f}%",
+                va="center", ha="left",
+                fontsize=10, fontweight="bold", color=INK["primary"])
+
+    # Gap annotation outside the right spine, colored by sign
+    _trans = blended_transform_factory(ax.transAxes, ax.transData)
+    for i, (_, row) in enumerate(plot.iterrows()):
+        gap = row["gap"]
+        if gap > 0:
+            gap_color = SEMANTIC["good"]
+        elif gap < 0:
+            gap_color = SEMANTIC["bad"]
+        else:
+            gap_color = INK["secondary"]
+        ax.text(1.02, i, f"{gap:+.1f}%",
+                transform=_trans, ha="left", va="center",
+                fontsize=10, fontweight="bold", family="monospace",
+                color=gap_color, clip_on=False)
+
+    ax.set_xlim(0, xmax * 1.18)
     ax.set_yticks(y)
-    ax.set_yticklabels(plot["role"])
+    ax.set_yticklabels(plot["role"], fontsize=12, fontweight="bold", color=INK["secondary"])
     ax.set_xlabel("% of group endorsing role", fontsize=11)
     ax.spines[["top", "right"]].set_visible(False)
+    ax.spines["left"].set_color(INK["hairline"])
+    ax.spines["bottom"].set_color(INK["hairline"])
     ax.grid(axis="x", linestyle=":", alpha=0.4, color=INK["hairline"])
-    # Legend on top, centered — title above it
+
     ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0),
-              ncol=2, frameon=False, fontsize=10, labelcolor=INK["secondary"])
-    ax.text(0, 1.14, "Role desires: CGL respondents over-endorse caregiving-shaped roles",
+              ncol=3, frameon=False, fontsize=10, labelcolor=INK["secondary"])
+    ax.text(0, 1.12,
+            "Role desires: CGL respondents over-endorse caregiving-shaped roles",
             transform=ax.transAxes, fontsize=14, fontweight="bold",
             color=INK["primary"], va="bottom")
     subtitle = (
-        f"Top 12 of 21 surveyed roles by |gap|.  Across all 21 roles, CGL+ endorses "
-        "every single one at a higher rate than CGL− — no role is non-CGL-tilted."
+        "Top 12 of 21 surveyed roles by |Δ| (CGL=True − CGL=False); rows ordered by CGL=True %.  "
+        "Across all 21 roles, CGL+ endorses every single one at a higher rate than CGL−."
     )
     if care_cgl is not None:
         subtitle += (
             f"\nCaretaker/caretakee dynamic (a separate soft-erotic item): "
             f"CGL+ = {care_cgl:.0f}%   vs   CGL− = {care_non:.0f}%   "
-            f"(Δ = {care_cgl - care_non:+.0f}pp — the structural signature of CGL)."
+            f"(Δ = {care_cgl - care_non:+.0f}% — the structural signature of CGL)."
         )
-    ax.text(0, 1.08, subtitle, transform=ax.transAxes,
+    ax.text(0, 1.06, subtitle, transform=ax.transAxes,
             fontsize=10, style="italic", color=INK["secondary"], va="bottom")
     plt.tight_layout(rect=[0, 0, 1, 0.94])
     plt.savefig(FIG_DIR / "story_04_roles.png", **SAVE_KW)
@@ -568,87 +625,148 @@ def figure_roles(df: pd.DataFrame) -> None:
 # ---------------------------------------------------------------------------
 
 def _build_endorsement_stats(df: pd.DataFrame, var_cols, prefix_re: str) -> pd.DataFrame:
-    """Return per-item endorsement % for CGL True / False / Unknown plus
-    gap (T−F) and Cohen's h on (T vs F)."""
+    """Return per-item endorsement % for CGL True / False / Unknown / Rest, plus
+    gap (T−F), gap_rest (T−Rest), and Cohen's h on (T vs F)."""
     n_pos = (df["cgl_flag"] == "True").sum()
     n_neg = (df["cgl_flag"] == "False").sum()
     n_unk = (df["cgl_flag"] == "Unknown").sum()
+    n_rest = n_neg + n_unk
+    rest_mask = df["cgl_flag"] != "True"
     rows = []
     for col in var_cols:
         p_pos = df.loc[df["cgl_flag"] == "True", col].sum() / n_pos * 100 if n_pos else 0
         p_neg = df.loc[df["cgl_flag"] == "False", col].sum() / n_neg * 100 if n_neg else 0
         p_unk = df.loc[df["cgl_flag"] == "Unknown", col].sum() / n_unk * 100 if n_unk else 0
+        p_rest = df.loc[rest_mask, col].sum() / n_rest * 100 if n_rest else 0
         h = cohens_h(p_pos / 100, p_neg / 100)
         name = re.sub(prefix_re, "", col)
         rows.append({
             "variable": name,
-            "pos_pct": p_pos, "neg_pct": p_neg, "unk_pct": p_unk,
-            "gap": p_pos - p_neg, "h": h,
+            "pos_pct": p_pos, "neg_pct": p_neg, "unk_pct": p_unk, "rest_pct": p_rest,
+            "gap": p_pos - p_neg, "gap_rest": p_pos - p_rest, "h": h,
         })
     return pd.DataFrame(rows)
 
 
 def _dumbbell_panel(ax, df, n_pos, n_neg, n_unk, *, max_x=None,
                     show_unknown=True, sort_ascending=True, pre_sorted=False,
-                    group_separators=None, group_labels=None):
-    """Standard dot-plot panel: CGL=True (green), CGL=False (red),
-    optional CGL=Unknown (gray), connecting line, gap label on the right.
+                    group_separators=None, group_labels=None,
+                    compare_mode="all_three",
+                    highlight_variables=None):
+    """Standard dot-plot panel matching the Highlight 4/5 style.
 
-    Matches the 'Emotional Desire sliced by CG vs Non-CG' style from the notebook.
+    compare_mode:
+      - "all_three": three dots per row — CGL=False (dark gray),
+                     CGL=Unknown (light gray), CGL=True (pink). Gap = T − F.
+      - "vs_rest":   two dots per row — Rest = False+Unknown (dark gray) vs
+                     CGL=True (pink). Gap = T − Rest (uses df['gap_rest']).
 
-    Args:
-        pre_sorted: if True, the caller has already arranged rows in display order
-            (bottom row = df.iloc[0], top row = df.iloc[-1]) and the function will
-            NOT resort by gap.
-        group_separators: optional list of row indices (in display order) AFTER which
-            to draw a horizontal divider — e.g. [9] divides rows 0–8 from 10+.
-        group_labels: optional list of (text, y_position) pairs to label groups on
-            the left margin.
+    Connector spans min..max of the displayed group %s.  Gap shown as +X.X%
+    colored green (positive) / red (negative).  Direct CGL=True % label
+    sits next to the pink dot.
     """
+    sort_col = "pos_pct"
     if not pre_sorted:
-        df = df.sort_values("gap", ascending=sort_ascending).reset_index(drop=True)
+        df = df.sort_values(sort_col, ascending=sort_ascending).reset_index(drop=True)
     else:
         df = df.reset_index(drop=True)
     y = np.arange(len(df))
 
-    # Connecting line between True and False
+    color_map = {
+        "False":   INK["secondary"],   # dark gray
+        "Unknown": INK["hairline"],    # light gray
+        "True":    ACCENT["hero"],     # pink
+        "Rest":    INK["secondary"],   # dark gray
+    }
+    size_map = {"False": 90, "Unknown": 80, "True": 120, "Rest": 100}
+
+    # Connector spans the min..max of the displayed group %s on each row
     for i, row in df.iterrows():
-        ax.plot([row["pos_pct"], row["neg_pct"]], [i, i],
-                color=INK["hairline"], lw=2, zorder=1)
+        if compare_mode == "vs_rest":
+            lo = min(row["pos_pct"], row["rest_pct"])
+            hi = max(row["pos_pct"], row["rest_pct"])
+        elif show_unknown:
+            lo = min(row["pos_pct"], row["neg_pct"], row["unk_pct"])
+            hi = max(row["pos_pct"], row["neg_pct"], row["unk_pct"])
+        else:
+            lo = min(row["pos_pct"], row["neg_pct"])
+            hi = max(row["pos_pct"], row["neg_pct"])
+        ax.plot([lo, hi], [i, i], color=INK["hairline"], lw=2.0, zorder=1)
 
-    if show_unknown:
-        ax.scatter(df["unk_pct"], y, color=INK["tertiary"], s=80, zorder=2,
-                   edgecolor=INK["canvas"], lw=1.0,
-                   label=f"CGL = Unknown (n={n_unk:,})")
-    ax.scatter(df["neg_pct"], y, color=SEMANTIC["bad"], s=100, zorder=3,
-               edgecolor=INK["canvas"], lw=1.2, label=f"CGL = False (n={n_neg:,})")
-    ax.scatter(df["pos_pct"], y, color=SEMANTIC["good"], s=120, zorder=4,
-               edgecolor=INK["canvas"], lw=1.5, label=f"CGL = True (n={n_pos:,})")
+    if compare_mode == "vs_rest":
+        n_rest = n_neg + n_unk
+        ax.scatter(df["rest_pct"], y, color=color_map["Rest"], s=size_map["Rest"],
+                   edgecolor=INK["canvas"], lw=1.2, zorder=3,
+                   label=f"Rest  (CGL=False + Unknown, n={n_rest:,})")
+        ax.scatter(df["pos_pct"], y, color=color_map["True"], s=size_map["True"],
+                   edgecolor=INK["canvas"], lw=1.2, zorder=4,
+                   label=f"CGL = True  (n={n_pos:,})")
+        gap_col = "gap_rest"
+    else:
+        if show_unknown:
+            ax.scatter(df["unk_pct"], y, color=color_map["Unknown"], s=size_map["Unknown"],
+                       edgecolor=INK["canvas"], lw=1.2, zorder=2,
+                       label=f"CGL = Unknown  (n={n_unk:,})")
+        ax.scatter(df["neg_pct"], y, color=color_map["False"], s=size_map["False"],
+                   edgecolor=INK["canvas"], lw=1.2, zorder=3,
+                   label=f"CGL = False  (n={n_neg:,})")
+        ax.scatter(df["pos_pct"], y, color=color_map["True"], s=size_map["True"],
+                   edgecolor=INK["canvas"], lw=1.2, zorder=4,
+                   label=f"CGL = True  (n={n_pos:,})")
+        gap_col = "gap"
 
-    # Gap annotation — placed outside the right spine so it never overlaps data
+    # Direct CGL=True % label next to the pink dot
+    for i, row in df.iterrows():
+        ax.text(row["pos_pct"] + 0.6, i, f"{row['pos_pct']:.1f}%",
+                va="center", ha="left",
+                fontsize=10, fontweight="bold", color=INK["primary"])
+
+    # Gap annotation outside the right spine, colored by sign
     if max_x is None:
-        max_x = max(df["pos_pct"].max(), df["neg_pct"].max(), df["unk_pct"].max()) * 1.18
+        if compare_mode == "vs_rest":
+            max_x = max(df["pos_pct"].max(), df["rest_pct"].max()) * 1.18
+        else:
+            max_x = max(df["pos_pct"].max(), df["neg_pct"].max(), df["unk_pct"].max()) * 1.18
     _trans = blended_transform_factory(ax.transAxes, ax.transData)
+    hl_terms = [s.lower() for s in (highlight_variables or [])]
     for i, row in df.iterrows():
-        ax.text(1.02, i, f"{row['gap']:+.1f}pp",
-                transform=_trans,
-                va="center", ha="left", fontsize=9, fontweight="bold",
-                color=INK["primary"], family="monospace", clip_on=False)
+        gap = row[gap_col]
+        var_name = str(row["variable"]).lower()
+        is_highlighted = (not hl_terms) or any(t in var_name for t in hl_terms)
+        if is_highlighted:
+            if gap > 0:
+                gap_color = SEMANTIC["good"]
+            elif gap < 0:
+                gap_color = SEMANTIC["bad"]
+            else:
+                gap_color = INK["secondary"]
+            weight = "bold"
+        else:
+            gap_color = INK["tertiary"]
+            weight = "regular"
+        ax.text(1.02, i, f"{gap:+.1f}%",
+                transform=_trans, va="center", ha="left",
+                fontsize=10, fontweight=weight, family="monospace",
+                color=gap_color, clip_on=False)
 
     ax.set_yticks(y)
     ax.set_yticklabels(df["variable"], fontsize=12, fontweight="bold",
                        color=INK["secondary"])
     ax.set_xlim(0, max_x)
-    ax.set_xlabel("% of group endorsing", fontsize=10)
+    ax.set_xlabel("% of group endorsing", fontsize=11)
     ax.spines[["top", "right"]].set_visible(False)
+    ax.spines["left"].set_color(INK["hairline"])
+    ax.spines["bottom"].set_color(INK["hairline"])
     ax.grid(axis="x", linestyle=":", alpha=0.4, color=INK["hairline"])
-    # Legend centered just above axes — fig.suptitle + fig.text handle all titling
-    n_legend = 3 if show_unknown else 2
+
+    if compare_mode == "vs_rest":
+        n_legend = 2
+    else:
+        n_legend = 3 if show_unknown else 2
     ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0),
               ncol=n_legend, frameon=False, fontsize=10,
               labelcolor=INK["secondary"])
 
-    # Optional horizontal separators between family groups
     if group_separators:
         for sep_after in group_separators:
             ax.axhline(
@@ -656,14 +774,13 @@ def _dumbbell_panel(ax, df, n_pos, n_neg, n_unk, *, max_x=None,
                 color=INK["tertiary"], lw=1.2, ls="--", alpha=0.6, zorder=0,
             )
 
-    # Optional family-group labels on the right margin
     if group_labels:
         for text, y_pos in group_labels:
             ax.text(
-                1.005, y_pos, text,
+                1.12, y_pos, text,
                 transform=ax.get_yaxis_transform(),
                 ha="left", va="center",
-                fontsize=10, fontweight="bold", color="#444",
+                fontsize=10, fontweight="bold", color=INK["secondary"],
                 rotation=90,
             )
 
@@ -680,23 +797,77 @@ def figure_soft_erotic(df: pd.DataFrame) -> pd.DataFrame:
     n_neg = (df["cgl_flag"] == "False").sum()
     n_unk = (df["cgl_flag"] == "Unknown").sum()
 
-    fig, ax = plt.subplots(figsize=(13, max(6, 0.55 * len(stats))))
-    max_x = max(stats["pos_pct"].max(), stats["neg_pct"].max(), stats["unk_pct"].max()) * 1.20
-    _dumbbell_panel(
-        ax, stats, n_pos, n_neg, n_unk,
-        max_x=max_x, sort_ascending=True,
-    )
-    ax.set_xticks([0, 5, 10, 15, 20, 25, 30, 35, 40, 45])
+    # Sort by CGL=True endorsement % (ascending → highest row sits at top)
+    plot = stats.sort_values("pos_pct", ascending=True).reset_index(drop=True)
 
-    fig.suptitle(
-        'Caretaker/caretakee dynamics: 4× more endorsed by CGL respondents (20% vs 5%)',
-        fontweight="bold", fontsize=14, y=0.99,
-    )
-    fig.text(
-        0.5, 0.94,
-        "Soft-erotic preferences by CGL group, sorted by CGL+ vs CGL− gap",
-        ha="center", va="top", fontsize=10, style="italic", color=INK["secondary"],
-    )
+    color_map = {
+        "False":   INK["secondary"],   # dark gray
+        "Unknown": INK["hairline"],    # light gray
+        "True":    ACCENT["hero"],     # pink
+    }
+    size_map = {"False": 90, "Unknown": 80, "True": 120}
+
+    fig, ax = plt.subplots(figsize=(14, max(7, 0.55 * len(plot))))
+    y = np.arange(len(plot))
+
+    # Connector line spans min..max of the three group %s per row
+    for i, row in plot.iterrows():
+        lo = min(row["pos_pct"], row["neg_pct"], row["unk_pct"])
+        hi = max(row["pos_pct"], row["neg_pct"], row["unk_pct"])
+        ax.plot([lo, hi], [i, i], color=INK["hairline"], lw=2.0, zorder=1)
+
+    ax.scatter(plot["unk_pct"], y, color=color_map["Unknown"], s=size_map["Unknown"],
+               edgecolor=INK["canvas"], linewidth=1.2, zorder=2,
+               label=f"CGL = Unknown  (n={n_unk:,})")
+    ax.scatter(plot["neg_pct"], y, color=color_map["False"], s=size_map["False"],
+               edgecolor=INK["canvas"], linewidth=1.2, zorder=3,
+               label=f"CGL = False  (n={n_neg:,})")
+    ax.scatter(plot["pos_pct"], y, color=color_map["True"], s=size_map["True"],
+               edgecolor=INK["canvas"], linewidth=1.2, zorder=4,
+               label=f"CGL = True  (n={n_pos:,})")
+
+    # CGL=True direct % label next to the pink dot
+    for i, row in plot.iterrows():
+        ax.text(row["pos_pct"] + 0.6, i, f"{row['pos_pct']:.1f}%",
+                va="center", ha="left",
+                fontsize=10, fontweight="bold", color=INK["primary"])
+
+    # Gap annotation outside the right spine, colored by sign
+    _trans = blended_transform_factory(ax.transAxes, ax.transData)
+    for i, row in plot.iterrows():
+        gap = row["gap"]
+        if gap > 0:
+            gap_color = SEMANTIC["good"]
+        elif gap < 0:
+            gap_color = SEMANTIC["bad"]
+        else:
+            gap_color = INK["secondary"]
+        ax.text(1.02, i, f"{gap:+.1f}%",
+                transform=_trans, ha="left", va="center",
+                fontsize=10, fontweight="bold", family="monospace",
+                color=gap_color, clip_on=False)
+
+    xmax = max(plot["pos_pct"].max(), plot["neg_pct"].max(), plot["unk_pct"].max())
+    ax.set_xlim(0, xmax * 1.18)
+    ax.set_yticks(y)
+    ax.set_yticklabels(plot["variable"], fontsize=12, fontweight="bold", color=INK["secondary"])
+    ax.set_xlabel("% of group endorsing", fontsize=11)
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.spines["left"].set_color(INK["hairline"])
+    ax.spines["bottom"].set_color(INK["hairline"])
+    ax.grid(axis="x", linestyle=":", alpha=0.4, color=INK["hairline"])
+
+    ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0),
+              ncol=3, frameon=False, fontsize=10, labelcolor=INK["secondary"])
+    ax.text(0, 1.12,
+            "Caretaker/caretakee dynamics: 4× more endorsed by CGL respondents (20% vs 5%)",
+            transform=ax.transAxes, fontsize=14, fontweight="bold",
+            color=INK["primary"], va="bottom")
+    ax.text(0, 1.06,
+            "Soft-erotic preferences by CGL group; rows ordered by CGL=True %.",
+            transform=ax.transAxes, fontsize=10, style="italic",
+            color=INK["secondary"], va="bottom")
+
     plt.tight_layout(rect=[0, 0, 1, 0.94])
     plt.savefig(FIG_DIR / "story_05_soft_erotic.png", **SAVE_KW)
     plt.close(fig)
@@ -722,12 +893,11 @@ def figure_nsfw_acts_positions(nsfw: pd.DataFrame) -> pd.DataFrame:
     acts_top = acts_stats.sort_values("gap", ascending=False).head(n_acts).copy()
     pos_top = pos_stats.sort_values("gap", ascending=False).head(n_pos_items).copy()
 
-    # Pre-sort: positions block (gap ASC) at the bottom of df → bottom of chart;
-    # acts block (gap ASC) above → visually at the top of the chart.
-    # Within each block, the row with the *largest* gap ends up at the visual top
-    # of that block.
-    pos_block = pos_top.sort_values("gap", ascending=True)
-    acts_block = acts_top.sort_values("gap", ascending=True)
+    # Pre-sort: positions block at the bottom, acts block above.
+    # Within each block, sort ASC by CGL=True endorsement so the highest %
+    # ends up at the visual top of the block.
+    pos_block = pos_top.sort_values("pos_pct", ascending=True)
+    acts_block = acts_top.sort_values("pos_pct", ascending=True)
     plot_df = pd.concat([pos_block, acts_block], ignore_index=True)
 
     # Prefix labels with family
@@ -745,22 +915,26 @@ def figure_nsfw_acts_positions(nsfw: pd.DataFrame) -> pd.DataFrame:
     n_unk = (nsfw["cgl_flag"] == "Unknown").sum()
 
     fig, ax = plt.subplots(figsize=(14, max(7, 0.45 * len(plot_df))))
-    max_x = max(plot_df["pos_pct"].max(), plot_df["neg_pct"].max(), plot_df["unk_pct"].max()) * 1.22
+    max_x = max(plot_df["pos_pct"].max(), plot_df["rest_pct"].max()) * 1.22
     _dumbbell_panel(
         ax, plot_df, n_pos, n_neg, n_unk,
-        max_x=max_x, pre_sorted=True,
+        max_x=max_x, pre_sorted=True, compare_mode="vs_rest",
         group_separators=[sep_after],
         group_labels=[("ACTS", acts_label_y), ("POSITIONS", pos_label_y)],
+        highlight_variables=[
+            "fingering mouths", "facefucking", "facesitting", "spanking", "facials",
+            "spooning", "reverse cowgirl",
+        ],
     )
     ax.set_xticks([0, 20, 40, 60, 80, 100])
 
     fig.suptitle(
-        "Face- and control-focused acts show the largest CGL gaps — fingering mouths leads (+8.5pp)",
+        "Face- and control-focused acts show the largest CGL gaps — fingering mouths leads",
         fontweight="bold", fontsize=14, y=0.99,
     )
     fig.text(
         0.5, 0.94,
-        "Sexual acts (top) and positions (bottom) — each block sorted by CGL+ vs CGL− gap",
+        "Sexual acts (top) and positions (bottom) — each block sorted by CGL=True %; gap = CGL+ minus Rest",
         ha="center", va="top", fontsize=10, style="italic", color=INK["secondary"],
     )
     plt.tight_layout(rect=[0, 0, 1, 0.94])
@@ -789,9 +963,9 @@ def figure_nsfw_common_uncommon(nsfw: pd.DataFrame) -> pd.DataFrame:
     unc_top = unc_stats.sort_values("gap", ascending=False).head(n_unc).copy()
 
     # Common above (top of chart), Uncommon below (bottom of chart).
-    # Build display order: uncommon block at the bottom of the df, common at the top.
-    unc_block = unc_top.sort_values("gap", ascending=True)
-    com_block = com_top.sort_values("gap", ascending=True)
+    # Within each block, sort ASC by CGL=True endorsement (highest at top of block).
+    unc_block = unc_top.sort_values("pos_pct", ascending=True)
+    com_block = com_top.sort_values("pos_pct", ascending=True)
     plot_df = pd.concat([unc_block, com_block], ignore_index=True)
 
     plot_df["variable"] = plot_df.apply(
@@ -807,22 +981,26 @@ def figure_nsfw_common_uncommon(nsfw: pd.DataFrame) -> pd.DataFrame:
     n_unk = (nsfw["cgl_flag"] == "Unknown").sum()
 
     fig, ax = plt.subplots(figsize=(14, max(7, 0.45 * len(plot_df))))
-    max_x = max(plot_df["pos_pct"].max(), plot_df["neg_pct"].max(), plot_df["unk_pct"].max()) * 1.22
+    max_x = max(plot_df["pos_pct"].max(), plot_df["rest_pct"].max()) * 1.22
     _dumbbell_panel(
         ax, plot_df, n_pos, n_neg, n_unk,
-        max_x=max_x, pre_sorted=True,
+        max_x=max_x, pre_sorted=True, compare_mode="vs_rest",
         group_separators=[sep_after],
         group_labels=[("COMMON", com_label_y), ("UNCOMMON", unc_label_y)],
+        highlight_variables=[
+            "gentleness", "nonconsent", "power dynamics", "humiliation", "sadomasochism",
+            "mental alteration", "bodily secretions", "nonstandard",
+        ],
     )
     ax.set_xticks([0, 20, 40, 60, 80, 100])
 
     fig.suptitle(
-        "Gentleness and nonconsent lead the CGL scene signal — both elevated by ~13pp",
+        "Gentleness and nonconsent lead the CGL scene signal",
         fontweight="bold", fontsize=14, y=0.99,
     )
     fig.text(
         0.5, 0.94,
-        "Common (top) and uncommon (bottom) NSFW preferences — each block sorted by CGL+ vs CGL− gap",
+        "Common (top) and uncommon (bottom) NSFW preferences — each block sorted by CGL=True %; gap = CGL+ minus Rest",
         ha="center", va="top", fontsize=10, style="italic", color=INK["secondary"],
     )
     plt.tight_layout(rect=[0, 0, 1, 0.94])

@@ -180,11 +180,19 @@ def figure_personality(df: pd.DataFrame) -> None:
 
     fig, axes = plt.subplots(1, 6, figsize=(17, 6.5), sharey=True, sharex=True)
 
-    # Collapse the raw -6..+6 OCEAN score into a 3-point Agreement Scale:
-    #   negative score → -1 (Disagree),  0 → 0 (Neutral),  positive score → +1 (Agree)
+    # Collapse the raw composite score into a 3-band scale using a ±3 threshold:
+    #   score ≤ −3 → −1 (Disagree),  −2..+2 → 0 (Neutral),  score ≥ +3 → +1 (Agree)
+    # Rationale: per the BKS_Data_Review interpretation table, ±3 is the first
+    # "clear endorsement" level; ±1/±2 is only a slight/mild lean, so it reads as
+    # effectively neutral on a 3-item summed (powerlessness) or differenced (OCEAN)
+    # composite. Sign-collapse (any nonzero → agree/disagree) overstated endorsement
+    # by bucketing near-zero scores as "Agree." Applied uniformly to all six panels.
     def to_agreement(series: pd.Series) -> np.ndarray:
         v = series.dropna().to_numpy()
-        return np.sign(v).astype(int)
+        out = np.zeros_like(v, dtype=int)
+        out[v >= 3] = 1
+        out[v <= -3] = -1
+        return out
 
     bin_centres = np.array([-1, 0, 1])
     bar_h       = 0.38
@@ -230,7 +238,7 @@ def figure_personality(df: pd.DataFrame) -> None:
                      color=INK["primary"], pad=8)
         ax.set_xlabel("% of group", fontsize=10, color=INK["secondary"], labelpad=22)
         ax.set_yticks(bin_centres)
-        ax.set_yticklabels(["−1\nDisagree", "0\nNeutral", "+1\nAgree"],
+        ax.set_yticklabels(["≤ −3\nDisagree", "−2…+2\nNeutral", "≥ +3\nAgree"],
                            fontsize=10, fontweight="bold", color=INK["primary"])
         ax.set_xlim(0, x_max + 15)
         ax.tick_params(axis="y", colors=INK["primary"])
@@ -260,7 +268,9 @@ def figure_personality(df: pd.DataFrame) -> None:
         0.005, 0.005,
         f"n CGL+ = {len(cgl_plus):,}   ·   n Rest = {len(rest):,}   "
         f"(Rest = CGL− [{len(non):,}] + Unknown [{len(rest) - len(non):,}])   ·   "
-        "Cohen's d annotation compares CGL+ vs CGL−; all values fall in the trivial band (|d| < 0.10)",
+        "Cohen's d annotation compares CGL+ vs CGL−; all values fall in the trivial band (|d| < 0.10)\n"
+        "Bands: composite score ≥ +3 = Agree, −2…+2 = Neutral, ≤ −3 = Disagree  "
+        "(±3 = first 'clear endorsement' level; ±1/±2 = slight lean → counted neutral)",
         fontsize=9, color=INK["tertiary"], style="italic",
         ha="left", va="bottom",
     )
@@ -364,16 +374,140 @@ def figure_emotion(df: pd.DataFrame) -> None:
     panel(axes[1], pct_right, titles[1], n_right)
 
     fig.suptitle(
-        "CGL respondents want complementary emotions — powerless for self, powerful for partner",
+        "CGL respondents favor complementary, power-asymmetric emotions over mutual ones",
         fontweight="bold", fontsize=14, y=0.99,
     )
     fig.text(
         0.5, 0.94,
-        "% choosing each emotion as most-wanted to feel (left) or most-wanted partner to feel (right)",
+        "% choosing each emotion as most-wanted for self (left) or partner (right).  "
+        "Both poles rise for the partner because pooled CGL+ mixes submissive and dominant "
+        "respondents, who want mirror-image pairings — the asymmetry is per-couple, not one direction.",
         ha="center", va="top", fontsize=10, style="italic", color=INK["secondary"],
     )
     plt.tight_layout(rect=[0, 0, 1, 0.94])
     plt.savefig(FIG_DIR / "story_02_emotion.png", **SAVE_KW)
+    plt.close(fig)
+
+
+# ---------------------------------------------------------------------------
+# Figure 2 (Highlight 2 hero): complementary asymmetry, faceted by D/S role
+# ---------------------------------------------------------------------------
+
+def figure_emotion_mirror(df: pd.DataFrame) -> None:
+    """Highlight-2 hero. The pooled two-panel (figure_emotion → appendix) hides the
+    story: submissive and dominant CGL+ want MIRROR-IMAGE pairings, so pooling them
+    lifts both power poles for the partner. Facet by D/S role to make the
+    complementarity legible; add a strip showing both camps drop mutual emotions."""
+    cgl = df[df["cgl_flag"] == "True"].copy()
+    non = df[df["cgl_flag"] == "False"]
+
+    def ds_bucket(s):
+        s = str(s).lower()
+        if "submissive" in s:
+            return "sub"
+        if "dominant" in s:
+            return "dom"
+        return "switch"
+    cgl["ds"] = cgl["ds_preference"].map(ds_bucket)
+
+    def pct(sub, col, val):
+        # % among responders (NaN dropped) — matches the report's Chapter 2 convention
+        s = sub[col].dropna()
+        return 100 * (s == val).mean() if len(s) else 0.0
+
+    POWERLESS = "Powerlessness or vulnerability"
+    POWER = "Power or smugness"
+    emo_rows = [(POWERLESS, "Powerlessness /\nvulnerability"),
+                (POWER, "Power /\nsmugness")]
+    roles = [("sub", "Submissive CGL+"), ("dom", "Dominant CGL+")]
+    taglines = {
+        "sub": "“I feel small · my partner feels big”",
+        "dom": "“I feel big · my partner feels small”",
+    }
+
+    fig = plt.figure(figsize=(14, 7.9))
+    gs = gridspec.GridSpec(2, 2, height_ratios=[2.7, 1.0], hspace=0.85, wspace=0.10)
+    ax_sub = fig.add_subplot(gs[0, 0])
+    ax_dom = fig.add_subplot(gs[0, 1], sharex=ax_sub, sharey=ax_sub)
+    ax_mut = fig.add_subplot(gs[1, :])
+
+    for ax, (key, title) in zip([ax_sub, ax_dom], roles):
+        grp = cgl[cgl["ds"] == key]
+        n = len(grp)
+        for y, (emo, _) in zip([1, 0], emo_rows):
+            self_x = pct(grp, "youfeelmost", emo)
+            partner_x = pct(grp, "otherfeel1most", emo)
+            ax.plot([partner_x, self_x], [y, y], color=INK["hairline"], lw=2.5, zorder=1)
+            ax.scatter(partner_x, y, s=160, facecolor=INK["canvas"],
+                       edgecolor=INK["secondary"], linewidth=2.0, zorder=3)
+            ax.scatter(self_x, y, s=180, color=ACCENT["hero"],
+                       edgecolor=INK["canvas"], linewidth=1.5, zorder=4)
+            ax.text(self_x, y + 0.22, f"self {self_x:.0f}%", ha="center", va="bottom",
+                    fontsize=10, fontweight="bold", color=ACCENT["hero"])
+            ax.text(partner_x, y - 0.22, f"partner {partner_x:.0f}%", ha="center", va="top",
+                    fontsize=10, color=INK["secondary"])
+        ax.set_yticks([1, 0])
+        ax.set_yticklabels([emo_rows[0][1], emo_rows[1][1]],
+                           fontsize=11, fontweight="bold", color=INK["primary"])
+        ax.set_ylim(-0.75, 1.75)
+        ax.set_xlim(-2, 30)
+        ax.set_title(f"{title}   (n={n:,})", fontsize=13, fontweight="bold",
+                     color=INK["primary"], pad=10)
+        ax.text(0.5, -0.18, taglines[key], transform=ax.transAxes, ha="center", va="top",
+                fontsize=11.5, style="italic", color=INK["secondary"])
+        ax.set_xlabel("% choosing as their #1 feeling", fontsize=9.5, color=INK["tertiary"])
+        ax.spines[["top", "right", "left"]].set_visible(False)
+        ax.spines["bottom"].set_color(INK["hairline"])
+        ax.tick_params(axis="y", length=0)
+        ax.grid(axis="x", linestyle=":", alpha=0.35, color=INK["hairline"])
+    ax_dom.tick_params(labelleft=False)
+
+    # Mutual-emotions strip: pooled CGL+ vs others — both fall (the one shared shift).
+    for y, val in zip([1, 0], ["Eagerness or desire", "Love or romance"]):
+        v_non = pct(non, "youfeelmost", val)
+        v_cgl = pct(cgl, "youfeelmost", val)
+        ax_mut.annotate("", xy=(v_cgl, y), xytext=(v_non, y),
+                        arrowprops=dict(arrowstyle="-|>", color=SEMANTIC["bad"], lw=2.4))
+        ax_mut.scatter(v_non, y, s=80, color=INK["tertiary"], zorder=3)
+        ax_mut.text(v_non + 0.5, y + 0.30, f"others {v_non:.0f}%", ha="left", va="bottom",
+                    fontsize=9, color=INK["tertiary"])
+        ax_mut.text(v_cgl - 0.5, y + 0.30, f"CGL+ {v_cgl:.0f}%", ha="right", va="bottom",
+                    fontsize=9, fontweight="bold", color=INK["primary"])
+    ax_mut.set_yticks([1, 0])
+    ax_mut.set_yticklabels(["Eagerness /\ndesire", "Love /\nromance"],
+                           fontsize=10.5, fontweight="bold", color=INK["primary"])
+    ax_mut.set_ylim(-0.8, 1.8)
+    ax_mut.set_xlim(0, 42)
+    ax_mut.set_xlabel("% choosing as their #1 feeling", fontsize=9.5, color=INK["tertiary"])
+    ax_mut.set_title("Both camps agree on one thing: less pull toward mutual, shared emotions",
+                     fontsize=12, fontweight="bold", color=INK["primary"], loc="left", pad=8)
+    ax_mut.spines[["top", "right", "left"]].set_visible(False)
+    ax_mut.spines["bottom"].set_color(INK["hairline"])
+    ax_mut.tick_params(axis="y", length=0)
+    ax_mut.grid(axis="x", linestyle=":", alpha=0.35, color=INK["hairline"])
+
+    legend_handles = [
+        Line2D([0], [0], marker="o", color="w", markerfacecolor=ACCENT["hero"],
+               markeredgecolor=INK["canvas"], markersize=13,
+               label="what they want to feel (self)"),
+        Line2D([0], [0], marker="o", color="w", markerfacecolor=INK["canvas"],
+               markeredgecolor=INK["secondary"], markeredgewidth=2, markersize=12,
+               label="what they want their partner to feel"),
+    ]
+    fig.suptitle(
+        "Submissive and dominant CGL respondents want mirror-image pairings",
+        x=0.5, y=0.985, fontsize=15.5, fontweight="bold", color=INK["primary"],
+    )
+    fig.text(0.5, 0.94,
+             "Each camp wants one partner powerless and the other powerful — they just take "
+             "opposite ends. Pooled together this looks like “both poles up”; split by role, "
+             "the complementarity is exact.",
+             ha="center", va="top", fontsize=10, style="italic", color=INK["secondary"])
+    fig.legend(handles=legend_handles, loc="upper center", bbox_to_anchor=(0.5, 0.885),
+               ncol=2, frameon=False, fontsize=10.5, labelcolor=INK["secondary"])
+
+    fig.subplots_adjust(left=0.13, right=0.97, top=0.78, bottom=0.085)
+    plt.savefig(FIG_DIR / "story_02_emotion_mirror.png", **SAVE_KW)
     plt.close(fig)
 
 
@@ -1070,16 +1204,24 @@ def figure_arousal_dual_panel(nsfw: pd.DataFrame) -> pd.DataFrame:
     pos_mask = nsfw["cgl_flag"] == "True"
     n_pos = int(pos_mask.sum())
     n_rest = int((~pos_mask).sum())
+    # Rates computed over RESPONDERS (NaN dropped) so the bars compare like-with-like
+    # and match the OR/forest panel. The previous full-group denominator made the
+    # CGL-gated items (regression/progression/agegap/older) misleading: the Rest bar
+    # was ~90% "NaN" because the Unknown cohort was never *asked* the gated questions,
+    # which reads as "Rest isn't aroused" when it actually means "Rest wasn't asked."
+    # The per-group response rate is disclosed in each item's header instead.
     rates = {}
     for k in res["variable"]:
         x = nsfw[k]
+        pos_resp = int((x.notna() & pos_mask).sum())
+        rest_resp = int((x.notna() & ~pos_mask).sum())
         rates[k] = dict(
-            pos_yes=((x >= 1) & pos_mask).sum() / n_pos,
-            pos_no=((x == 0) & pos_mask).sum() / n_pos,
-            pos_nan=(x.isna() & pos_mask).sum() / n_pos,
-            rest_yes=((x >= 1) & ~pos_mask).sum() / n_rest,
-            rest_no=((x == 0) & ~pos_mask).sum() / n_rest,
-            rest_nan=(x.isna() & ~pos_mask).sum() / n_rest,
+            pos_yes=((x >= 1) & pos_mask).sum() / pos_resp if pos_resp else 0.0,
+            pos_no=((x == 0) & pos_mask).sum() / pos_resp if pos_resp else 0.0,
+            pos_resprate=pos_resp / n_pos if n_pos else 0.0,
+            rest_yes=((x >= 1) & ~pos_mask).sum() / rest_resp if rest_resp else 0.0,
+            rest_no=((x == 0) & ~pos_mask).sum() / rest_resp if rest_resp else 0.0,
+            rest_resprate=rest_resp / n_rest if n_rest else 0.0,
         )
 
     # ----- Plot -----
@@ -1089,7 +1231,6 @@ def figure_arousal_dual_panel(nsfw: pd.DataFrame) -> pd.DataFrame:
                   "weak": "★ weak", "ns": "n.s. after FDR"}
     C_YES  = SEMANTIC["good"]    # arousing — yes
     C_NO   = SEMANTIC["bad"]     # not arousing — no
-    C_NAN  = INK["surface"]      # no response
 
     n = len(res)
     fig = plt.figure(figsize=(16, 0.95 * n + 3.6))
@@ -1114,19 +1255,22 @@ def figure_arousal_dual_panel(nsfw: pd.DataFrame) -> pd.DataFrame:
         for y, prefix, alpha in [(y_top, "pos", 1.0), (y_bot, "rest", 0.78)]:
             yes = rates[k][f"{prefix}_yes"]
             no_ = rates[k][f"{prefix}_no"]
-            nan_ = rates[k][f"{prefix}_nan"]
             axL.barh(y, yes, color=C_YES, alpha=alpha, edgecolor="white")
             axL.barh(y, no_, left=yes, color=C_NO, alpha=alpha, edgecolor="white")
-            axL.barh(y, nan_, left=yes + no_, color=C_NAN, alpha=alpha, edgecolor="white")
             _pct_label(axL, yes / 2, y, yes, on_dark=True)
             _pct_label(axL, yes + no_ / 2, y, no_, on_dark=True)
-            _pct_label(axL, yes + no_ + nan_ / 2, y, nan_, on_dark=False)
 
         axL.text(-0.01, y_top, "CGL+", ha="right", va="center",
                  fontsize=8.5, fontweight="bold")
         axL.text(-0.01, y_bot, "Rest", ha="right", va="center", fontsize=8.5)
         axL.text(0, y_top - 0.55, f"{k}   {TIER_BADGE[row['tier']]}",
                  ha="left", va="bottom", fontsize=10.5, fontweight="bold", color=c_tier)
+        # Disclose how many of each group actually answered (replaces NaN bar).
+        # Bars are among respondents; for gated items Rest's % answered is low.
+        axL.text(1.0, y_top - 0.55,
+                 f"answered:  CGL+ {rates[k]['pos_resprate']*100:.0f}%  ·  "
+                 f"Rest {rates[k]['rest_resprate']*100:.0f}%",
+                 ha="right", va="bottom", fontsize=7.5, color=INK["tertiary"])
 
         y_mid = (y_top + y_bot) / 2
         axR.plot([row["or_lo"], row["or_hi"]], [y_mid, y_mid], color=c_tier, lw=2)
@@ -1163,7 +1307,9 @@ def figure_arousal_dual_panel(nsfw: pd.DataFrame) -> pd.DataFrame:
         fontsize=14, fontweight="bold", y=0.995,
     )
     fig.text(0.5, 0.965,
-             f"CGL+ n = {n_pos:,}   ·   Rest n = {n_rest:,}",
+             f"CGL+ n = {n_pos:,}   ·   Rest n = {n_rest:,}   ·   "
+             "left bars = arousing vs not among respondents (% answered per row; "
+             "CGL-gated age items are unasked for most of Rest)",
              ha="center", va="top", fontsize=10, style="italic", color="#555")
     caption = (
         "How to read each forest row:  OR  ·  h  ·  p\n"
@@ -1183,7 +1329,6 @@ def figure_arousal_dual_panel(nsfw: pd.DataFrame) -> pd.DataFrame:
     response_handles = [
         Patch(facecolor=C_YES, label="Arousing (≥1)"),
         Patch(facecolor=C_NO, label="Not Arousing (=0)"),
-        Patch(facecolor=C_NAN, label="No Response (NaN)"),
     ]
     axL.legend(handles=response_handles, loc="lower center",
                bbox_to_anchor=(0.5, 1.0), ncol=3, frameon=False, fontsize=9)
@@ -1213,7 +1358,9 @@ def main():
 
     print("→ figure 1: personality")
     figure_personality(df)
-    print("→ figure 2: emotion")
+    print("→ figure 2: emotion (mirror — Highlight 2 hero)")
+    figure_emotion_mirror(df)
+    print("→ figure 2 (appendix): full emotion distributions")
     figure_emotion(df)
     print("→ figure 3: D/S preference")
     figure_ds(df)

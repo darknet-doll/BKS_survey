@@ -1,5 +1,7 @@
 # Understanding Caregiving Dynamic Kinks
 
+_Living document — survey witness (self-report). Twin of [`taxonomy/1b_CGL_Personals_Story_and_Report.md`](../taxonomy/1b_CGL_Personals_Story_and_Report.md) (behavioral witness). **v1.1 — 2026-06-21:** all comparisons standardized to CGL+ vs CGL−; figures + numbers re-anchored to source CSVs via [`build_story_figures.py`](build_story_figures.py). See Decision log._
+
 CGL (Caregiving dynamics) is a **relational kink structured around one partner caring for another** within an explicitly-consented power-asymmetric frame—soft caregiving inside an unequal emotional dynamic.
 
 > **Content note.** This piece discusses adult relationship preferences in plain, conversational terms. It is about consenting adults and the emotional and relational shapes their fantasies take.
@@ -12,9 +14,30 @@ CGL (Caregiving dynamics) is a **relational kink structured around one partner c
 
 **Data source:** The Big Kink Survey, created and administered by [Aella](https://aella.substack.com/p/heres-my-big-kink-survey-dataset). The survey collected responses from approximately 970,000 participants and covers sexual interests, personality traits, demographics, and relationship preferences. I analyzed a subset focused on caregiving dynamics:
 
-- **15,000+** respondents total
+- **15,503** respondents in the analyzed slice
 - **2,845** who identify with caregiving dynamics (CGL-positive)
 - **1,295** who don't (CGL-negative)
+- **11,363** who did not answer the CGL item (Unknown — a missing-data category)
+
+---
+
+## How groups are defined, compared, and tested
+
+**Operationalization.** Group membership comes from a single 0–5 self-rating, `cgl` ("how aroused are you by caregiving dynamics"):
+
+| code | group | n | definition |
+|:--|:--|--:|:--|
+| `cgl ≥ 1` | **CGL+** | 2,845 | any endorsement of the caregiving-dynamic item |
+| `cgl = 0` | **CGL−** | 1,295 | explicit non-endorsement |
+| missing | **Unknown** | 11,363 | did not answer the CGL item |
+
+**Comparator (read before any number).** Every comparison in this report is **CGL+ vs CGL−**. The **Unknown cohort is excluded** from all effect sizes — it is a missing-data category, not an opposing-preference group. This matters: on the kink-arousal block the Unknown cohort has **~100% non-response** (they were never routed to the CGL-gated items), so pooling them into a "Rest = CGL− + Unknown" comparator **inflates odds ratios** through differential, item-specific non-response. CGL+ and CGL− both answered the block at ~100%, so the CGL+ vs CGL− contrast carries no differential-non-response artifact. (Earlier drafts mixed a "vs Rest" comparator into the arousal figure; v1.1 removes it — see Decision log.)
+
+**Varying N is expected, not an error.** The full cohort is 2,845 / 1,295, but each analysis uses only respondents who answered *that* item, so per-analysis n differs slightly (e.g., the D/S item: 2,777 / 1,267). Per-analysis n is stated in each chapter.
+
+**Effect sizes over p-values.** At n ≈ 4,000 almost any non-zero difference is "significant," so every claim leads with a **sample-size-independent effect size** (Cohen's d for means, Cohen's h for proportions, rank-biserial r for ordinal ranks, odds ratio for binary endorsement) and treats the p-value as a gate, not evidence of magnitude.
+
+**Multiple-comparison & CI policy.** The distribution/gap tables (Chapters 2, 4, 5, 6-endorsements) are **descriptive** — per-item effect sizes with no per-cell significance test, because the substantive question is *which items drive the difference*, not whether a 15-category table differs overall. The one place a formal family of tests is run — the 18-item **arousal scale** (Chapter 6) — carries **Benjamini-Hochberg FDR correction** and Wald 95% CIs on every odds ratio. CIs are reported where a test is run; gap tables are labeled descriptive.
 
 ---
 
@@ -32,7 +55,7 @@ There are common stereotypes about CGL dynamics evaluated through data:
 |:---|:---|:---|
 | **CGL is a personality type — it tells you who someone "really" is** <br><br> **CGL respondents feel generally powerless or low-agency in life** <br><br> **Littles are immature, broken, or can't function as adults** | • The OCEAN Big Five personality test (openness, conscientiousness, extraversion, neuroticism, agreeableness) reveals **no meaningful difference** between CGL+ and CGL− <br> <br> • Evaluating respondents' beleif on their locus of control shows **no difference either** — CGL respondents don't feel less in control of their lives.<br> <br> • Not more agreeable, more open, more conscientious, or more neurotic <br> • No stereotyped personality or belief profile applies | H1 |
 | **CGL = a dominant person controlling a submissive person** <br><br> **CGL = a submissive identity, full stop** | • CGL tilts submissive on average: **44% vs 38%** — only a 6% gap <br> • **~30%** of CGL respondents are dominant; another ~25% are switches or prefer equal partnerships <br> • A real lean, but so small it barely matters — far smaller than how much people differ from one another <br><br>• Knowing someone desires CGL barely tells you their D/S preference — it tilts the odds, it doesn't lock anyone in | H3 |
-| **It's "wholesome soft kink" — nothing intense going on** <br><br>**It's not "real" BDSM — just cuddling** | **When comparing scene desires, there are key differences in someone who seeks CGL dynamics wants:** <br>• Gentleness **+14%** <br> • Consensual nonconsent fantasy **+13%** <br> • Power dynamics & D/s **+12%** <br> • Humiliation **+11.7%** <br> • Sadomasochism **+11.2%** <br><br> **Signals found at the arousal level indicate that structured power exchange are more desired:** <br> • Master/slave **2.39×** more likely arousing <br> • Full-time power exchange **2.32×** <br> • Obedience **2.21×** <br> • Mindbreak / mental domination **2.02×** <br> • Extreme bondage **1.69×** <br><br> Soft caregiving sits *inside* a power-asymmetric frame — both registers, not one or the other | H5, H6 |
+| **It's "wholesome soft kink" — nothing intense going on** <br><br>**It's not "real" BDSM — just cuddling** | **When comparing scene desires, there are key differences in someone who seeks CGL dynamics wants:** <br>• Gentleness **+14%** <br> • Consensual nonconsent fantasy **+13%** <br> • Power dynamics & D/s **+12%** <br> • Humiliation **+11.7%** <br> • Sadomasochism **+11.2%** <br><br> **Signals found at the arousal level indicate that structured power exchange are more desired:** <br> • Full-time power exchange **2.09×** more likely arousing <br> • Obedience **2.03×** <br> • Master/slave **1.86×** <br> • Mindbreak / mental domination **1.65×** <br> • Extreme bondage **1.64×** <br><br> Soft caregiving sits *inside* a power-asymmetric frame — both registers, not one or the other | H5, H6 |
 | **It's about being attracted to older partners or age gaps** | • **Having an older partner**: no real difference — CGL respondents are no more drawn to it than anyone else <br> • **An age gap between partners**: nearly everyone asked finds it at least a little arousing, so a simple yes/no can't separate the groups — but CGL respondents find it *more strongly* arousing (46% vs 37% say "very/extremely"). A small difference, not nothing. <br><br> • The single biggest turn-on for CGL respondents is **being treated as small, soft, and cared-for** (regression): **2.76× more likely** to find it arousing <br> • Being cared-for matters far more than any age gap <br><br> • Bottom line: it's about the "cared-for" feeling, not partner age | H6 |
 
 ### Additional findings
@@ -203,17 +226,16 @@ This highlight has three pieces: which **acts** CGL respondents prefer, which **
 - **Regression is the dominant signal.** 2.76× as many CGL respondents find it arousing.
   - **Regression** = arousal to being treated as smaller, softer, more vulnerable.
   
-- **Eight more items show strong arousal differences for CGL respondents.** The thread is a desire for structured power asymmetry.
-  - Full-time power exchange (2.32×)
-  - Master/slave (2.39×)
-  - Mindbreak / mental domination (2.02×)
-  - Obedience (2.21×)
-  - Voyeurism (2.27× and 2.03×)
-  - Extreme bondage (1.69×)
-  - Progression / age-play progression (1.69×). 
+- **Six more items reach the moderate tier for CGL respondents.** The thread is a desire for structured power asymmetry.
+  - Full-time power exchange (2.09×)
+  - Progression / age-play progression (1.69×)
+  - Master/slave (1.86×)
+  - Extreme bondage (1.64×)
+  - Mindbreak / mental domination (1.65×)
+  - Worshipping (1.75×)
 
-- **Five more items show weaker but real arousal differences.**
-  - Worshipping, exhibitionism, medium bondage, etc. — all trend CGL.
+- **Five more items show weaker but FDR-significant arousal differences.**
+  - Obedience (2.03×), voyeurism (other 1.50× / self 1.38×), medium bondage (1.72×), exhibitionism-other (1.44×) — all trend CGL.
 - **Three things show no real difference.**
   - Having an older partner: no difference — whether you ask it as a simple yes/no or by how strongly people are turned on, CGL respondents are no different here.
   - Light bondage: no difference.
@@ -260,7 +282,7 @@ An intense, fantasy-coded power dynamic inside an explicitly-consented frame. Th
 1. **OCEAN** — the standard Big-Five *personality* model (openness, conscientiousness, extraversion, neuroticism, agreeableness).
 2. **Powerlessness** — **not** a personality trait, but a *locus-of-belief* measure in the tradition of Rotter's locus-of-control. It captures the degree to which a respondent believes outcomes happen *to* them vs. *because of* them.
 
-Across all six measures, every Cohen's d between CGL-positive (n=2,845) and CGL-negative (n=1,295) respondents falls inside the trivial-effect band (|d| < 0.10). The largest absolute d is 0.043 (extraversion). Powerlessness, the construct most plausibly related to CGL on prior intuition, is d = +0.04 — also trivial. With this sample size, statistical "significance" is essentially guaranteed for any non-zero difference, which is why effect size — not p-value — is the relevant decision metric.
+Across all six measures, every Cohen's d between CGL-positive (n=2,845) and CGL-negative (n=1,295) respondents falls inside the trivial-effect band (|d| < 0.10). The largest absolute d is 0.044 (extraversion). Powerlessness, the construct most plausibly related to CGL on prior intuition, is d = +0.04 — also trivial. With this sample size, statistical "significance" is essentially guaranteed for any non-zero difference, which is why effect size — not p-value — is the relevant decision metric.
 
 **Relevance.** This is a *dual* clean null result. The OCEAN null rules out a personality-based account of CGL; the powerlessness null rules out the simplest alternative ("CGL respondents feel less agentic in general"). Both are strong priors against the framing that CGL "is who someone is" or "reflects how they feel about control in their life." Together they motivate the rest of the report's focus on **relational structure**, **emotion**, and **content preference** — variables that describe how someone *relates and arouses*, not who they *are*.
 
@@ -342,8 +364,10 @@ Splitting CGL-positive respondents by D/S preference exposes the complementarity
 | CGL+ subgroup        |   self: powerless |   self: power |   partner: powerless |   partner: power |
 |:---------------------|------------------:|--------------:|---------------------:|-----------------:|
 | Submissive (n=1,229) |              25.7 |           1.6 |                  3.4 |             24.7 |
-| Switch/equal (n=771) |               8.7 |           4.6 |                 10.9 |              8.2 |
+| Switch/equal (n=703) |               8.3 |           4.3 |                 10.1 |              7.6 |
 | Dominant (n=845)     |               5.8 |          14.8 |                 20.1 |              4.2 |
+
+_Cells are % among responders to each emotion item, so subgroup n's are the emotion-item responders within each D/S camp (sum ≈ the 2,777 who answered the D/S item)._
 
 The submissive and dominant rows are near-perfect mirror images: each camp wants one party powerless and the other powerful, in opposite directions (submissive: self-powerless 25.7 / partner-powerful 24.7; dominant: partner-powerless 20.1 / self-powerful 14.8). The switch/equal middle is roughly balanced. This is the mechanism behind the "bidirectional asymmetry" framing and Highlight 2's mirror figure, and it is consistent with Chapter 3 — CGL+ contains substantial dominant and switch minorities, not only submissives. Pooling the three rows partially cancels the opposing directions, which is why the aggregate `otherfeel1most` gaps look small and bidirectional.
 
@@ -366,37 +390,34 @@ The submissive and dominant rows are near-perfect mirror images: each camp wants
 
 ### Insight & relevance
 
-**Insight.** On a 7-point dominance-submission scale, CGL-positive respondents skew submissive (44.3%) more than CGL-negative respondents (37.8%) — a real and statistically significant difference (Kruskal-Wallis H = 21.5, p < 0.001), but with a negligible effect size (η² = 0.0013). Approximately 30% of CGL+ respondents identify as dominant; another 25% sit in the switch/equal middle. The substantively important relational signal is not the D/S tilt itself; it is the caretaker/caretakee over-representation (Chapter 4) that the D/S tilt sits on top of.
+**Insight.** On a 7-point dominance-submission scale, CGL-positive respondents skew submissive (44.3%) more than CGL-negative respondents (37.8%) — a real and statistically significant difference (Mann-Whitney U, p = 7×10⁻⁵), but with a negligible effect size (rank-biserial r = +0.077). Approximately 30% of CGL+ respondents identify as dominant; another 25% sit in the switch/equal middle. The substantively important relational signal is not the D/S tilt itself; it is the caretaker/caretakee over-representation (Chapter 4) that the D/S tilt sits on top of.
 
-**Relevance.** This chapter is the most important sanity check against the "CGL = submissive identity" framing in the discourse. The data licenses "tilts submissive on average" and does not license "is submissive." The tilt is reproducible (the chart's pairwise Mann-Whitney tests confirm CGL=True differs from both CGL=False and Unknown at Bonferroni-corrected p < 0.001), but the magnitude is small relative to within-group variance.
+**Relevance.** This chapter is the most important sanity check against the "CGL = submissive identity" framing in the discourse. The data licenses "tilts submissive on average" and does not license "is submissive." The tilt is reproducible (Mann-Whitney U on the ordinal rank, p < 0.001), but the magnitude is small relative to within-group variance.
 
 ### Headline numbers — D/S spectrum, collapsed to three buckets
 
-| cgl_flag   |        n |   Submissive % |   Switch/Equal % |   Dominant % |
-|:-----------|---------:|---------------:|-----------------:|-------------:|
-| False      |  1,267   |          37.80 |            28.70 |        33.50 |
-| True       |  2,777   |          44.30 |            25.30 |        30.40 |
-| Unknown    | 11,051   |          38.80 |            29.80 |        31.40 |
+CGL+ vs CGL− among respondents to the D/S item (Unknown excluded as missing-data).
+
+| group   |        n |   Submissive % |   Switch/Equal % |   Dominant % |
+|:--------|---------:|---------------:|-----------------:|-------------:|
+| CGL−    |  1,267   |          37.8  |            28.7  |        33.5  |
+| CGL+    |  2,777   |          44.3  |            25.3  |        30.4  |
 
 ### Method
 
 - **D/S variable.** `ds_preference`, a 7-point ordinal scale from "Totally submissive" to "Totally dominant," mapped to integer rank 1–7.
-- **Test.** Kruskal-Wallis omnibus across CGL=True / CGL=False / Unknown, followed by pairwise Mann-Whitney U with Bonferroni correction.
+- **Test.** Mann-Whitney U on the ordinal rank, CGL+ vs CGL− (two groups; Unknown excluded as a missing-data category per the report-wide comparator policy).
 - **Rationale for non-parametric testing.** `ds_preference` is ordinal — the interval between "Slightly submissive" and "Moderately submissive" is not guaranteed equal to other gaps on the scale. Rank-based tests respect ordinality without assuming normal residuals or equal variance.
-- **Effect size.** η² computed from H, which is sample-size-independent and the appropriate companion to p-value here.
+- **Effect size.** Rank-biserial r (derived from U), sample-size-independent and the appropriate companion to the p-value here.
 
 ### Full statistics
 
-- **Kruskal-Wallis on D/S rank:** H = 21.5, p < 0.001 (***), η² = 0.0013 (negligible), n = 15,095.
-- **Pairwise Mann-Whitney U (Bonferroni-corrected):**
-  - CGL=False vs CGL=True: p < 0.001 (***)
-  - CGL=False vs Unknown: p = 0.231 (ns)
-  - CGL=True vs Unknown: p < 0.001 (***)
+- **Mann-Whitney U on D/S rank (CGL+ vs CGL−):** U = 1,624,603, p = 7×10⁻⁵ (***), rank-biserial r = +0.077 (negligible), n = 2,777 (CGL+) + 1,267 (CGL−).
+- Rank-biserial bands: |r| < 0.10 negligible, 0.10–0.30 small, 0.30–0.50 moderate. The observed r = 0.077 is below the negligible threshold — a real but practically trivial submissive tilt.
 
 ### Interpretation and limits
 
 - The D/S result is *directionally informative but practically small*. Reporting it without an effect size would inflate its substantive weight.
-- The Unknown cohort is **not equivalent to non-CGL.** It is a missing-data category and is reported separately throughout; pairwise tests show it does not cleanly collapse onto either CGL-positive or CGL-negative respondents.
 - A "switch" who plays caregiver in one scene and little in another is fully consistent with the data. Treating the submissive lean as a binary identity is wrong.
 
 ---
@@ -426,7 +447,7 @@ The submissive and dominant rows are near-perfect mirror images: each camp wants
 
 ### Caretaker / caretakee dynamic — the structural signature
 
-**20% of CGL-positive respondents endorse the caretaker/caretakee dynamic, vs. 5% of CGL-negative respondents.** Cohen's h on this single item is approximately 0.46 (small-to-moderate), and the absolute percentage-point gap (+15) is the largest in the soft-erotic preference set.
+**20.2% of CGL-positive respondents endorse the caretaker/caretakee dynamic, vs. 4.6% of CGL-negative respondents.** Cohen's h on this single item is 0.498 (the small-to-medium / medium boundary — see Chapter 5), and the absolute percentage-point gap (+15.5) is the largest in the soft-erotic preference set.
 
 ### Method
 
@@ -456,7 +477,7 @@ n CGL+ = 2,845; n CGL− = 1,295. Sorted by |Δ|.
 
 | preference                       | CGL+ % | CGL− % | Δ (pp)   | Cohen's h | effect tier |
 |:---------------------------------|-------:|-------:|---------:|----------:|:------------|
-| **caretaker / caretakee dynamics** | 20.18  | 4.63   | **+15.54** | **0.498** | medium      |
+| **caretaker / caretakee dynamics** | 20.18  | 4.63   | **+15.54** | **0.498** | small–med (≈0.50 boundary) |
 | affection                        | 31.39  | 24.94  | +6.45    | 0.144     | small       |
 | sensual healing                  | 16.66  | 10.35  | +6.31    | 0.186     | small       |
 | romance                          | 31.14  | 25.02  | +6.12    | 0.136     | small       |
@@ -471,7 +492,7 @@ n CGL+ = 2,845; n CGL− = 1,295. Sorted by |Δ|.
 - **Variables.** Ten binary `soft_erotic_*` columns in `cgl_BKS_data.csv`.
 - **Comparison.** CGL+ (cgl_flag == True, n=2,845) vs CGL− (cgl_flag == False, n=1,295). The Unknown cohort is plotted separately in the figure but excluded from the headline comparison because it is a missing-data category, not an opposing-preference group.
 - **Endorsement metric.** Per-item percentage endorsing (sum / group size).
-- **Effect size.** Cohen's h, base-rate-normalised: `h = 2·arcsin(√p1) − 2·arcsin(√p2)`. Conventional bands: |h| < 0.10 trivial, 0.10–0.20 small, 0.20–0.50 small-to-medium, 0.50+ medium-to-large. `caretaker/caretakee` clears the medium threshold; every other item sits in the small band.
+- **Effect size.** Cohen's h, base-rate-normalised: `h = 2·arcsin(√p1) − 2·arcsin(√p2)`. Conventional bands: |h| < 0.10 trivial, 0.10–0.20 small, 0.20–0.50 small-to-medium, 0.50+ medium-to-large. `caretaker/caretakee` sits right at the small-to-medium / medium boundary (h = 0.498 ≈ 0.50); every other item sits in the small band.
 
 ### Interpretation and limits
 
@@ -490,7 +511,7 @@ n CGL+ = 2,845; n CGL− = 1,295. Sorted by |Δ|.
 
 **Insight (endorsements — acts + positions block).** Sexual-act gaps are smaller and concentrated on a coherent face/mouth/control-flavoured subset: fingering mouths (+8.5pp, h = 0.169), facefucking (+7.1pp, h = 0.151), fisting (+6.0pp, h = 0.154), facesitting (+5.9pp, h = 0.121), spanking (+5.6pp, h = 0.121), facials (+5.2pp, h = 0.106). Positions are even smaller (top items at h < 0.10). Universally-popular acts (vaginal fingering, oral, standard intercourse) show negligible CGL-vs-CGL− gaps. The CGL signal at the act level is not "are you into sex" — it is "which thin subset of acts carry a power-dynamic flavour."
 
-**Insight (arousal scale).** Across 18 power-dynamic, bondage, voyeurism, and age-related arousal items (0–5 scale, binarised at ≥ 1), **regression** is the single strongest CGL signal: OR = 2.76× (95% CI [2.41, 3.18]), Cohen's h = +0.50, FDR-adjusted p < 0.001. Nine items reach the moderate-effect tier (|h| ≥ 0.20 with significant FDR-adjusted p): regression, fulltimepower, voyeurother, masterslave, mindbreak, voyeurself, progression, extremebondage, obedience. Four items **fail FDR-corrected significance** on the binary test: older, lightbondage, humiliation (as a binary 0-vs-≥1 arousal item — note this differs from the common_humiliation endorsement, which *is* significant), and agegap. **Two of these four are ceiling artifacts of the ≥1 binarisation, not true nulls:** humiliation (near-universal endorsement) and **agegap** — which shows a 97% ceiling on the binary but a small real difference on the full 0–5 scale (CGL+ mean 3.21 vs CGL− 2.94, Cohen's d = 0.21, Mann-Whitney p ≈ 2×10⁻¹⁰). `older` and `lightbondage` are true nulls (older d = 0.06 on intensity).
+**Insight (arousal scale).** Across 18 power-dynamic, bondage, voyeurism, and age-related arousal items (0–5 scale, binarised at ≥ 1, CGL+ vs CGL−), **regression** is the single strongest CGL signal: OR = 2.76× (95% CI [2.41, 3.18]), Cohen's h = +0.50, FDR-adjusted p < 0.001. **Seven items** reach the moderate-effect tier (|h| ≥ 0.20 with significant FDR-adjusted p): regression, fulltimepower, progression, masterslave, extremebondage, mindbreak, worshipping. **Six items fail FDR-corrected significance** on the binary test: humiliation, exhibitionself, worshipped, older, lightbondage, agegap. **Two of these six are ceiling artifacts of the ≥1 binarisation, not true nulls:** humiliation (near-universal endorsement, 97% vs 95% — note this differs from the common_humiliation endorsement, which *is* significant) and **agegap** — which shows a 97% ceiling on the binary but a small real difference on the full 0–5 scale (CGL+ mean 3.21 vs CGL− 2.94, Cohen's d = 0.21, Mann-Whitney p ≈ 2×10⁻¹⁰). `older` and `lightbondage` are true nulls (older d = 0.055 on intensity). _(These ORs are CGL+ vs CGL−; an earlier draft compared CGL+ vs a "Rest" pool that the non-responding Unknown cohort inflated — see Decision log.)_
 
 **Relevance.** This chapter is the most defensible empirical statement of "what CGL content preference actually looks like." It locates the strongest endorsement signal in the **common-preferences block** (scene framing, not specific acts), the strongest single-item arousal signal in **regression** (consistent with the caring-direction story), and confirms that partner-age items (older, agegap) are **not** CGL-distinguishing once multiple comparisons are corrected for. It also clarifies the humiliation-measurement difference: significant on the common-prefs endorsement test, null on the binary arousal-scale test, for measurement-specific reasons (ceiling effect at ≥1 on the arousal scale).
 
@@ -532,51 +553,52 @@ The **gentleness + nonconsent + power dynamics + humiliation** cluster at the to
 
 ### Headline numbers — arousal-scale binary endorsement test
 
-Sorted by effect size. **OR** is the odds ratio of CGL+ vs Rest endorsing the item (≥ 1 on 0–5). **p_fdr** is checked for false positives across the 18 items. **Tier:** Strong effect (OR ≈ 2×+), moderate effect (OR ≈ 1.7–2×), weak effect (small but real difference), no effect (not significant after checking for false positives).
+Sorted by effect size. **OR** is the odds ratio of CGL+ vs **CGL−** endorsing the item (≥ 1 on 0–5), with Wald 95% CI. **p_fdr** is Benjamini-Hochberg-corrected across the 18 items. **Tier is set by Cohen's h** (one consistent metric, base-rate-normalised), gated on FDR significance + a CI excluding 1: moderate |h| ≥ 0.20, weak 0.10 ≤ |h| < 0.20, no effect = fails FDR (no item reaches the |h| ≥ 0.50 "strong" band). OR is shown as support, not as the tier driver — using OR to tier produced the inconsistency where two items with the same h landed in different tiers.
 
-| variable        |   OR  |  OR 95% CI       |  Cohen's h |  p_fdr     | tier           |
-|:----------------|------:|:-----------------|-----------:|:-----------|:---------------|
-| regression      | 2.76  | [2.41, 3.18]     |     +0.50  | < 0.001    | Strong effect  |
-| fulltimepower   | 2.32  | [2.06, 2.61]     |     +0.37  | < 0.001    | Strong effect  |
-| voyeurother     | 2.27  | [1.96, 2.63]     |     +0.33  | < 0.001    | Strong effect  |
-| masterslave     | 2.39  | [2.06, 2.77]     |     +0.32  | < 0.001    | Strong effect  |
-| mindbreak       | 2.02  | [1.79, 2.29]     |     +0.30  | < 0.001    | Strong effect  |
-| voyeurself      | 2.03  | [1.75, 2.35]     |     +0.28  | < 0.001    | Strong effect  |
-| progression     | 1.69  | [1.48, 1.94]     |     +0.26  | < 0.001    | Moderate      |
-| extremebondage  | 1.69  | [1.49, 1.92]     |     +0.22  | < 0.001    | Moderate      |
-| obedience       | 2.21  | [1.81, 2.71]     |     +0.22  | < 0.001    | Strong effect  |
-| worshipping     | 1.67  | [1.46, 1.91]     |     +0.18  | < 0.001    | Weak effect    |
-| exhibitionother | 1.69  | [1.39, 2.06]     |     +0.16  | < 0.001    | Weak effect    |
-| worshipped      | 1.51  | [1.27, 1.78]     |     +0.12  | < 0.001    | Weak effect    |
-| mediumbondage   | 1.61  | [1.22, 2.13]     |     +0.10  | 0.001      | Weak effect    |
-| exhibitionself  | 1.38  | [1.13, 1.68]     |     +0.09  | 0.002      | Weak effect    |
-| **older**       | 1.12  | [0.98, 1.27]     |     +0.05  | 0.122      | **No effect**  |
-| **lightbondage**| 1.34  | [0.96, 1.87]     |     +0.05  | 0.113      | **No effect**  |
-| **humiliation** | 1.23  | [0.82, 1.85]     |     +0.04  | 0.393      | **No effect** † |
-| **agegap**      | 1.15  | [0.77, 1.71]     |     +0.02  | 0.567      | **No effect** † |
+| variable        |   OR  |  OR 95% CI       |  Cohen's h |  p_fdr     | tier            |
+|:----------------|------:|:-----------------|-----------:|:-----------|:----------------|
+| regression      | 2.76  | [2.41, 3.18]     |     +0.50  | < 0.001    | Moderate        |
+| fulltimepower   | 2.09  | [1.74, 2.52]     |     +0.32  | < 0.001    | Moderate        |
+| progression     | 1.69  | [1.48, 1.94]     |     +0.26  | < 0.001    | Moderate        |
+| masterslave     | 1.86  | [1.49, 2.33]     |     +0.22  | < 0.001    | Moderate        |
+| extremebondage  | 1.64  | [1.34, 2.00]     |     +0.20  | < 0.001    | Moderate        |
+| mindbreak       | 1.65  | [1.35, 2.01]     |     +0.20  | < 0.001    | Moderate        |
+| worshipping     | 1.75  | [1.43, 2.15]     |     +0.20  | < 0.001    | Moderate        |
+| obedience       | 2.03  | [1.50, 2.73]     |     +0.19  | < 0.001    | Weak            |
+| voyeurother     | 1.50  | [1.20, 1.88]     |     +0.16  | < 0.001    | Weak            |
+| humiliation     | 1.85  | [1.02, 3.34]     |     +0.12  | 0.080      | **No effect** † |
+| voyeurself      | 1.38  | [1.10, 1.73]     |     +0.12  | 0.013      | Weak            |
+| mediumbondage   | 1.72  | [1.15, 2.58]     |     +0.11  | 0.018      | Weak            |
+| exhibitionother | 1.44  | [1.07, 1.93]     |     +0.11  | 0.026      | Weak            |
+| exhibitionself  | 1.31  | [0.97, 1.77]     |     +0.08  | 0.112      | **No effect**   |
+| worshipped      | 1.27  | [0.97, 1.65]     |     +0.07  | 0.112      | **No effect**   |
+| **older**       | 1.11  | [0.98, 1.27]     |     +0.05  | 0.128      | **No effect**   |
+| **lightbondage**| 1.29  | [0.76, 2.17]     |     +0.04  | 0.441      | **No effect**   |
+| **agegap**      | 1.15  | [0.77, 1.71]     |     +0.02  | 0.564      | **No effect** † |
 
-> ⚠ **Two of the four "No effect" rows are ceiling artifacts of the ≥1 binarisation (†), not true nulls.** **`agegap`**: 97% of *both* CGL+ and CGL− (among those asked) clear the ≥1 threshold, so the binary test has no power — but on the full 0–5 scale CGL+ rate it higher (mean **3.21 vs 2.94**; **46% vs 37%** "very/extremely"; Cohen's **d = 0.21**; Mann-Whitney **p ≈ 2×10⁻¹⁰**). It is a *small* real signal, not a null. **`humiliation`**: same ceiling (significant on the common-prefs endorsement, null here). **`older`** and **`lightbondage`** are true nulls — `older` is null on the 0–5 intensity scale too (d = 0.06).
+After switching from the contaminated "vs Rest" comparator to CGL+ vs CGL−, the headline (**regression OR 2.76**, CI [2.41, 3.18]) is **unchanged** — both groups answered the block fully, so it never depended on the comparator. Several power-exchange ORs that were inflated by the Unknown cohort's differential non-response shrink toward their true value (e.g. `masterslave` 2.39→1.86, `voyeurother` 2.27→1.50, `mindbreak` 2.02→1.65), and two items (`exhibitionself`, `worshipped`) drop below FDR significance. **Seven items** reach the moderate tier (regression, fulltimepower, progression, masterslave, extremebondage, mindbreak, worshipping); **six fail FDR** (humiliation, exhibitionself, worshipped, older, lightbondage, agegap). No item reaches the "strong" (|h| ≥ 0.50) band — regression, at h = 0.498, sits just under it.
+
+> ⚠ **Two of the six "No effect" rows are ceiling artifacts of the ≥1 binarisation (†), not true nulls.** **`agegap`**: 97% of *both* CGL+ and CGL− clear the ≥1 threshold, so the binary test has no power — but on the full 0–5 scale CGL+ rate it higher (mean **3.21 vs 2.94**; **46% vs 37%** "very/extremely"; Cohen's **d = 0.21**; Mann-Whitney **p ≈ 2×10⁻¹⁰**). It is a *small* real signal, not a null. **`humiliation`**: same ceiling (97% vs 95%) — significant on the common-prefs endorsement (+11.7pp, h = 0.253), null here; the binary OR 1.85 is unstable (CI [1.02, 3.34]) precisely because almost everyone clears the floor. **`older`** is a true null on the 0–5 intensity scale too (d = 0.055, p = 0.087); **`lightbondage`** is a true null (98% vs 97% ceiling).
 
 ### Method
 
 - **Endorsement variables.** Binary `act_*`, `pos_*`, `common_*`, `uncommon_*` columns in `BKS_nsfw_preferences.csv`.
-- **Endorsement comparison.** CGL+ (`cgl_flag == True`, n=2,845) vs CGL− (`cgl_flag == False`, n=1,295). The Unknown cohort is plotted separately in the figures but excluded from the headline endorsement comparison because it is a missing-data category, not an opposing-preference group. (The arousal-scale comparison below uses CGL+ vs Rest = `cgl_flag != True` for compatibility with the source notebook's `plot_kink_dual_panel`; this is noted explicitly per finding.)
+- **Endorsement comparison.** CGL+ (`cgl_flag == True`, n=2,845) vs CGL− (`cgl_flag == False`, n=1,295). The Unknown cohort is excluded from every comparison and is not plotted, because it is a missing-data category, not an opposing-preference group.
 - **Endorsement metric.** Per-item percentage endorsing (sum / group size). Effect size = Cohen's h (base-rate-normalised) computed as `2·arcsin(√p1) − 2·arcsin(√p2)`.
 - **Arousal-scale variables.** 18 items rated 0–5 (0 = "not arousing at all"), binarised to "arousing" (≥ 1) vs "not arousing" (= 0). NaN dropped per item, per group, so rates are conditional on responding.
-- **Arousal-scale comparison.** CGL+ (n=2,845) vs Rest (CGL− + Unknown, n=12,658). This matches the notebook's `plot_kink_dual_panel` cell and uses the wider comparator because the arousal block is filtered by an earlier completion gate; the Unknown cohort that *did* reach the block behaves like the responder population on arousal items.
+- **Arousal-scale comparison.** CGL+ (n=2,845) vs CGL− (n=1,295) — the same comparator as every other chapter. Both groups answered the arousal block at ~100% (they engaged the CGL item), so the contrast carries no differential-non-response artifact. The Unknown cohort is excluded: it has ~100% non-response on this block (never routed to the CGL-gated items), so a "Rest = CGL− + Unknown" pool would inflate ORs through item-specific missingness — an earlier draft used that pool and is corrected here (Decision log).
 - **Arousal-scale test.** 2×2 contingency table per item (group × arousing/not-arousing). Chi-square with continuity correction when all expected counts ≥ 5; Fisher's exact otherwise. Odds ratio with Wald 95% CI on the log scale (Haldane +0.5 correction when any cell is 0). Multiple-comparison correction: Benjamini-Hochberg FDR across the 18 items.
-- **Tier definition.** Strong effect = |h| ≥ 0.5 or OR ≈ 2×+ with significant FDR-adjusted p; moderate = |h| ≥ 0.2 or OR ≈ 1.7–2×; weak effect = |h| ≥ 0.1 with significant FDR-adjusted p; no effect = not significant after multiple-comparison correction.
-- **Missingness audit.** Non-response rates differ by group (Rest has a higher skip rate on the kink-arousal block). The reported arousal-scale rates and ORs are "among responders"; the missingness audit cell in the source notebook documents the response-rate gap per item.
+- **Tier definition.** Tiered by **one metric (Cohen's h)**, gated on FDR-significance + a 95% CI excluding 1: strong |h| ≥ 0.5, moderate 0.2 ≤ |h| < 0.5, weak 0.1 ≤ |h| < 0.2, no effect = not significant after FDR. (Earlier drafts tiered by "OR *or* h," which let two items with identical h land in different tiers — removed.)
+- **Missingness audit.** With the Unknown cohort excluded, CGL+ and CGL− both answer the arousal block at ~100%, so there is no differential-non-response gap to correct; rates and ORs are "among responders" but the responder set is effectively the full group for both.
 
 ### Interpretation and limits
 
 - **Common-preferences cluster is the headline endorsement signal.** Gentleness, nonconsent, power dynamics, humiliation, and sadomasochism all sit at h ≈ 0.23–0.28 (small-to-moderate) and shift in the same direction. The pairing of *gentleness* with *nonconsent* / *power dynamics* / *humiliation* is the structural picture — caring inside an asymmetric frame — at the kink-preference level.
 - **Regression is the dominant arousal-scale signal.** OR ≈ 2.76× with tight 95% CI [2.41, 3.18] places this in the moderate-effect tier and aligns with the qualitative framing throughout the report: the CGL fantasy direction is about being cared-for, being treated as smaller/softer.
-- **Power-dynamic structure also signals strongly on arousal scale.** Fulltimepower, masterslave, mindbreak, obedience, voyeurother, and extremebondage all reach the moderate tier with ORs in the 1.7–2.4× range. These items index structural power asymmetry, the relational frame Chapter 4 identified.
-- **Age items: one true null, one ceiling artifact.** `older` (OR 1.12) is a genuine null — within noise on the binary *and* on the full 0–5 intensity scale (d = 0.06) → partner *being older* doesn't differentiate CGL. `agegap` (OR 1.15) is null *only on the binary* (a 97% ceiling among those asked); on the 0–5 scale CGL+ rate it modestly higher (mean 3.21 vs 2.94, d = 0.21, p ≈ 2×10⁻¹⁰). So the defensible statement is **not** "age is irrelevant" but "partner age is a *minor* signal — `older` flat, `agegap` small — dwarfed by regression (d = 0.45), the cared-for direction." This still rebuts the "age-attraction" reading: age is a minor note, not the core of CGL.
-- **Humiliation behaves differently across measures — read carefully.** Significant on `common_humiliation` endorsement (+11.7pp, h = 0.253) and modestly on the single-pick `youfeelmost` (+2.3pp, Chapter 2). **Not** significant on the binary arousal-scale endorsement (OR 1.23, p_fdr = 0.39). All three are consistent: kink-survey respondents broadly find humiliation at-least-somewhat arousing (the arousal-scale ≥1 binary loses power at the ceiling), but CGL respondents flag it as a *preferred* common kink far more often. The arousal-scale null is a measurement-specific null, not a "humiliation isn't CGL-related" finding.
-- **Comparison-group note.** The endorsement tables (CGL+ vs CGL−) and the arousal-scale forest plot (CGL+ vs Rest) use different denominators by design, as noted in Method. Earlier drafts of this document reported the endorsement tables against the wider Rest pool; those numbers are mechanically different (larger gaps) because Unknown respondents have low endorsement rates (mostly because many did not complete the relevant block, not because they don't endorse). The current CGL+ vs CGL− comparison is the apples-to-apples version.
-- **Non-response bias.** Rest has a ~47% skip rate on the arousal block vs ~28% for CGL+. Arousal-scale rates and ORs are conditional on responding; results are interpretable as "among respondents to this block," not "in the population."
+- **Power-dynamic structure also signals on the arousal scale.** Fulltimepower (2.09×), masterslave (1.86×), extremebondage (1.64×), and mindbreak (1.65×) reach the moderate tier; obedience (2.03×) and voyeurother (1.50×) are weak-but-significant. These items index structural power asymmetry, the relational frame Chapter 4 identified. (Their ORs are lower than an earlier "vs Rest" draft reported — that pool was inflated by the non-responding Unknown cohort; the values here are the clean CGL+ vs CGL− contrast.)
+- **Age items: one true null, one ceiling artifact.** `older` (OR 1.11) is a genuine null — within noise on the binary *and* on the full 0–5 intensity scale (d = 0.055) → partner *being older* doesn't differentiate CGL. `agegap` (OR 1.15) is null *only on the binary* (a 97% ceiling among those asked); on the 0–5 scale CGL+ rate it modestly higher (mean 3.21 vs 2.94, d = 0.21, p ≈ 2×10⁻¹⁰). So the defensible statement is **not** "age is irrelevant" but "partner age is a *minor* signal — `older` flat, `agegap` small — dwarfed by regression (d = 0.45), the cared-for direction." This still rebuts the "age-attraction" reading: age is a minor note, not the core of CGL.
+- **Humiliation behaves differently across measures — read carefully.** Significant on `common_humiliation` endorsement (+11.7pp, h = 0.253) and modestly on the single-pick `youfeelmost` (+2.3pp, Chapter 2). **Not** significant on the binary arousal-scale endorsement (OR 1.85 but p_fdr = 0.080, CI [1.02, 3.34]). All three are consistent: kink-survey respondents broadly find humiliation at-least-somewhat arousing (97% vs 95% — the arousal-scale ≥1 binary loses power at the ceiling, which also makes the OR point estimate unstable), but CGL respondents flag it as a *preferred* common kink far more often. The arousal-scale null is a measurement-specific null, not a "humiliation isn't CGL-related" finding.
+- **One comparator throughout.** Every table and figure in this chapter — endorsements *and* the arousal forest plot — compares CGL+ vs CGL−. An earlier draft ran the arousal forest plot against a "Rest = CGL− + Unknown" pool; because the Unknown cohort has ~100% non-response on the arousal block, that pool inflated several ORs (e.g. masterslave 1.86→2.39, voyeurother 1.50→2.27). The correction does not move the headline (regression 2.76× is unchanged) but it lowers the power-exchange ORs and drops two items below FDR significance. See Decision log.
 - **Behavioural validity.** Endorsement and arousal-rating are self-report. No behavioural validation.
 
 ---
@@ -587,9 +609,9 @@ The six chapters converge on a single account of CGL:
 
 1. **Not a personality (Ch. 1).** OCEAN and powerlessness-as-locus-of-belief do not differentiate CGL respondents from non-CGL respondents at any substantive effect size (all |d| < 0.05). No stereotyped personality or belief profile applies.
 2. **Emotionally asymmetric (Ch. 2).** CGL respondents shift toward unequal-position emotions (vulnerability + power, safety + protection) and away from mutual-pursuit emotions (eagerness −6.4pp, romance −2.5pp). The desire is for complementary, not shared, feelings.
-3. **Submissive-tilting, but not submissive (Ch. 3).** D/S preference distinguishes the groups statistically (p < 0.001) but with negligible magnitude (η² = 0.0013) — the lean is real but small, with ~30% of CGL+ identifying as dominant.
+3. **Submissive-tilting, but not submissive (Ch. 3).** D/S preference distinguishes the groups statistically (Mann-Whitney p = 7×10⁻⁵) but with negligible magnitude (rank-biserial r = 0.077) — the lean is real but small, with ~30% of CGL+ identifying as dominant.
 4. **Built around caregiving roles (Ch. 4).** CGL+ over-endorses every surveyed role; the largest gaps cluster on caregiving-shaped scenarios (babysitter +10.7pp, teacher +8.6pp, doctor +6.6pp).
-5. **Caretaker / caretakee dynamics is the preference-level signature (Ch. 5).** 20% vs 5% endorsement, h ≈ 0.498 (medium effect) — the largest single soft-erotic signal in the survey and the mechanistic bridge between role-fantasy and NSFW content.
+5. **Caretaker / caretakee dynamics is the preference-level signature (Ch. 5).** 20% vs 5% endorsement, h = 0.498 (at the small-to-medium / medium boundary) — the largest single soft-erotic signal in the survey and the mechanistic bridge between role-fantasy and NSFW content.
 6. **Content signal is gentleness + nonconsent + regression + structured power exchange (Ch. 6).** Common-preference endorsements concentrate on the soft-register and asymmetric-frame items together (gentleness +13.8pp, nonconsent +13.4pp); the strongest arousal-scale item is regression (OR 2.76×, h = +0.50). Partner-age items are minor: `older` is a true null, `agegap` only a small intensity effect (d = 0.21) — both dwarfed by regression (d = 0.45).
 7. **Non-consent fantasy and enthusiastic consent are *both* elevated (Ch. 5–6 bridge).** Nonconsent fantasy (+13.4pp, Ch. 6) and enthusiastic consent (+5.3pp, Ch. 5) shift in the same direction, not opposite directions. These items aren't in tension — they are the structural pairing the kink is built on: an intense fantasy-coded power dynamic inside an explicitly-consented frame.
 
@@ -601,10 +623,10 @@ The unifying frame: **CGL is best understood as a relational-emotional kink, def
 
 - **Self-report.** All measures are survey self-report. No behavioural validation.
 - **Sampling.** Recruitment skews toward online kink communities. External validity to the general population is limited.
-- **Unknown cohort.** 11,363 respondents (73%) did not answer the CGL question. The "Unknown" group is a missing-data category and is reported separately throughout; it is not interchangeable with CGL-negative.
-- **Multiple comparisons.** Where applicable (e.g., arousal-scale binary endorsement across 18 items), Benjamini-Hochberg FDR correction is applied. The Chapter 2 emotional-distribution gaps are reported descriptively without per-cell tests; the substantive interpretation focuses on the largest gaps.
+- **Unknown cohort.** 11,363 respondents (73%) did not answer the CGL question. The "Unknown" group is a missing-data category, **excluded from every comparison** (see "How groups are defined" at the top); it is not interchangeable with CGL-negative. The exclusion is deliberate: on the kink-arousal block the Unknown cohort has ~100% non-response, so pooling it into a comparator inflates effect sizes.
+- **Multiple comparisons.** Where a formal family of tests is run (the arousal-scale binary endorsement across 18 items), Benjamini-Hochberg FDR correction is applied. The Chapter 2/4/5/6-endorsement gap tables are reported descriptively (per-item effect sizes, no per-cell test); the substantive interpretation focuses on the largest gaps. This split is stated up front in the stats policy.
 - **OCEAN scope.** OCEAN measures broad personality structure, not narrow facets. A null result against OCEAN does not rule out facet-level differences.
-- **Non-response on NSFW block.** Rest has a higher skip rate (~47%) on the kink-arousal block than CGL+ (~28%). Reported rates and ORs are conditional on responding.
+- **Non-response is controlled by the comparator, not corrected after the fact.** Because all comparisons are CGL+ vs CGL− and both groups answered the arousal block at ~100%, there is no differential-non-response bias in the reported ORs. (The bias lived in the Unknown cohort, which is excluded.) Rates and ORs are "among responders," which for these two groups is effectively the whole group.
 
 ---
 
@@ -613,13 +635,23 @@ The unifying frame: **CGL is best understood as a relational-emotional kink, def
 | Test / Metric | What it does | What it's used for | How to read the results | Where used |
 |---|---|---|---|---|
 | **Cohen's d** | Standardised mean difference between two groups in pooled-SD units; sample-size-independent | How different two groups are on a scale from "the same" to "completely different" — no math degree needed | Bigger number = bigger difference. Anything under 0.10 means "so close it barely matters." 0.20–0.50 means "you'd notice the difference." 0.50+ means "obvious difference." | Ch. 1 |
-| **Cohen's h** | Base-rate-normalised effect size for difference in proportions: `h = 2·arcsin(√p1) − 2·arcsin(√p2)` | Does one group pick something way more often than the other? This measures "how much more." | Bigger number = bigger difference in what two groups like. Under 0.10 means "about the same." 0.20–0.50 means "noticeably different." 0.50+ means "really different tastes." | Ch. 4 (caretaker), Ch. 5 (endorsements + arousal) |
-| **Kruskal-Wallis H** | Non-parametric 3-group omnibus on ranked/ordinal data | Are these three groups ranked differently? (Like, do they order from most-to-least differently?) | Bigger H number + smaller p-value (p < 0.05) = "yes, the groups rank differently." The exact number doesn't matter; just "is p small?" | Ch. 3 |
-| **Mann-Whitney U** | Non-parametric 2-group test on ranked/ordinal data | Are two ranked groups different? | Smaller p-value (p < 0.05) = "yes, they're different." Pair this with Cohen's d or h to see if the difference is tiny or huge. | Ch. 3 (pairwise follow-ups) |
-| **Bonferroni correction** | Multiplies each p-value by the number of comparisons; conservative family-wise error control | If you test the same data 10 times, you'll eventually get a fake "yes" by luck. This correction makes it harder to get fooled. | After correction, p-values get bigger. This means a "yes" is a "yes" you can trust. | Ch. 3 (3 pairwise comparisons) |
-| **η² (eta-squared)** | Effect size for Kruskal-Wallis; sample-size-independent | After Kruskal-Wallis says groups are different, how *big* is that difference? | Numbers under 0.01 = "tiny difference." 0.01–0.06 = "small." 0.06–0.14 = "medium." | Ch. 3 |
-| **Chi-square / Fisher's exact** | 2×2 contingency test for binary endorsement; Fisher used when any expected cell < 5 | "Does group A pick yes/no differently than group B?" | Small p-value (p < 0.05) = "yes, they pick differently." Pair with odds ratio to see by how much. | Ch. 5 (arousal-scale binary test) |
-| **Odds ratio (OR) + 95% CI** | Group-comparison effect on a log-multiplicative scale; CI excludes 1 ⇔ significant | How much more likely is group A to do something than group B? | OR = 2.0 means "group A is twice as likely." OR = 0.5 means "group A is half as likely." If the range (95% CI) crosses 1.0, the difference might be luck. | Ch. 5 (arousal-scale forest plot) |
-| **Benjamini-Hochberg FDR** | Multiple-comparison correction controlling expected false-discovery proportion; less conservative than Bonferroni | Testing 18 things at once? This keeps the "accidentally yes" rate under control without being as harsh as Bonferroni. | After correction, p-values get bigger, but not as much as Bonferroni. A "yes" after this is real. | Ch. 5 (across 18 arousal-scale items) |
+| **Cohen's h** | Base-rate-normalised effect size for difference in proportions: `h = 2·arcsin(√p1) − 2·arcsin(√p2)` | Does one group pick something way more often than the other? This measures "how much more." | Bigger number = bigger difference in what two groups like. Under 0.10 means "about the same." 0.20–0.50 means "noticeably different." 0.50+ means "really different tastes." | Ch. 4 (caretaker), Ch. 5 (soft-erotic), Ch. 6 (NSFW endorsements + arousal) |
+| **Mann-Whitney U** | Non-parametric 2-group test on ranked/ordinal data | Are two ranked groups (CGL+ vs CGL−) different? | Smaller p-value (p < 0.05) = "yes, they're different." Pair with rank-biserial r to see if the difference is tiny or huge. | Ch. 3 (D/S preference) |
+| **Rank-biserial r** | Effect size derived from Mann-Whitney U; sample-size-independent | After Mann-Whitney says two groups differ, how *big* is the difference? | |r| < 0.10 = "negligible." 0.10–0.30 = "small." 0.30–0.50 = "moderate." 0.50+ = "large." | Ch. 3 |
+| **Chi-square / Fisher's exact** | 2×2 contingency test for binary endorsement; Fisher used when any expected cell < 5 | "Does group A pick yes/no differently than group B?" | Small p-value (p < 0.05) = "yes, they pick differently." Pair with odds ratio to see by how much. | Ch. 6 (arousal-scale binary test) |
+| **Odds ratio (OR) + 95% CI** | Group-comparison effect on a log-multiplicative scale; CI excludes 1 ⇔ significant | How much more likely is group A to do something than group B? | OR = 2.0 means "group A is twice as likely." OR = 0.5 means "group A is half as likely." If the range (95% CI) crosses 1.0, the difference might be luck. | Ch. 6 (arousal-scale forest plot) |
+| **Benjamini-Hochberg FDR** | Multiple-comparison correction controlling expected false-discovery proportion; less conservative than Bonferroni | Testing 18 things at once? This keeps the "accidentally yes" rate under control without being as harsh as Bonferroni. | After correction, p-values get bigger. A "yes" after this is real. | Ch. 6 (across 18 arousal-scale items) |
 
---- 
+---
+
+## Decision log
+
+_Append-only. Records changes that affect reported numbers, so a reviewer can see what moved and why._
+
+- **2026-06-21 — v1.1 — Comparator standardization (CGL+ vs CGL−).** Every comparison, figure, and table now uses CGL+ (`cgl ≥ 1`, n=2,845) vs CGL− (`cgl = 0`, n=1,295); the Unknown cohort (n=11,363, did not answer the CGL item) is excluded from all effect sizes and is no longer plotted.
+  - *Why:* the arousal forest plot (Highlight 6c / Chapter 6) previously compared CGL+ vs "Rest" (CGL− + Unknown). Unknown has ~100% non-response on the CGL-gated arousal block, so the pool inflated several odds ratios through differential, item-specific missingness. The personality figure and the 6a/6b NSFW dumbbells also showed a Rest/Unknown series that did not match their CGL+ vs CGL− tables.
+  - *Numbers that moved:* arousal ORs dropped to their clean values (`masterslave` 2.39→1.86, `voyeurother` 2.27→1.50, `mindbreak` 2.02→1.65, `fulltimepower` 2.32→2.09, etc.); two items (`exhibitionself`, `worshipped`) fell below FDR significance (now 6 "no effect" rows, was 4); the moderate tier went from 9 items to 7. **The headline is unchanged:** regression OR 2.76× [2.41, 3.18], h = 0.50 — it never depended on the comparator because both groups answered the block fully.
+  - *Also:* Chapter 3 D/S test changed from a 3-group Kruskal-Wallis (η² = 0.0013) that included the 11k Unknown cohort to a 2-group Mann-Whitney U (CGL+ vs CGL−), p = 7×10⁻⁵, rank-biserial r = 0.077 — same conclusion (negligible tilt), defensible comparator.
+  - *Tiering:* arousal items are now tiered by a single metric (Cohen's h) gated on FDR + CI, replacing the "OR-or-h" rule that let two items with identical h land in different tiers.
+  - *Hygiene:* `caretaker/caretakee` effect size reconciled to h = 0.498 across chapters (was quoted as 0.46 in Chapter 4); the duplicate `soft_erotic_clear` column (identical to `enthusiastic consent`) dropped from the Chapter 5 figure; per-analysis N's stated where item completion differs from the cohort total.
+  - *Reproducibility:* figures regenerated from the source CSVs by [`build_story_figures.py`](build_story_figures.py) (reads `../database/cgl_BKS_data.csv` + `BKS_nsfw_preferences.csv`; no hand-entered numbers). *Reversible:* `git checkout` the figures + this file.

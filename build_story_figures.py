@@ -16,7 +16,6 @@ from __future__ import annotations
 
 import re
 import warnings
-from itertools import combinations
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -30,7 +29,6 @@ from matplotlib.transforms import blended_transform_factory
 from scipy.stats import (
     chi2_contingency,
     fisher_exact,
-    kruskal,
     mannwhitneyu,
 )
 
@@ -164,7 +162,7 @@ def or_with_ci(a, b, c, d, z=1.96):
 
 def figure_personality(df: pd.DataFrame) -> None:
     # 5-panel horizontal density distributions, one per OCEAN trait.
-    # CGL+ (hero pink) vs Rest (hairline gray) — distributions overlap almost perfectly.
+    # CGL+ (hero pink) vs CGL− (hairline gray) — distributions overlap almost perfectly.
     ocean_traits = [
         ("openness", "Openness"),
         ("consciensiousness", "Conscientiousness"),
@@ -175,23 +173,27 @@ def figure_personality(df: pd.DataFrame) -> None:
     ]
 
     cgl_plus = df[df["cgl_flag"] == "True"]
-    rest     = df[df["cgl_flag"] != "True"]
-    non      = df[df["cgl_flag"] == "False"]   # for Cohen's d annotation only (CGL+ vs CGL−)
+    non      = df[df["cgl_flag"] == "False"]   # CGL− — apples-to-apples comparator
+    rest     = non                              # comparison series = CGL− (Unknown excluded as a missing-data category)
 
-    fig, axes = plt.subplots(1, 6, figsize=(17, 6.5), sharey=True, sharex=True)
+    fig, axes = plt.subplots(1, 6, figsize=(16, 5.2), sharey=True, sharex=True)
 
-    # Collapse the raw composite score into a 3-band scale using a ±3 threshold:
-    #   score ≤ −3 → −1 (Disagree),  −2..+2 → 0 (Neutral),  score ≥ +3 → +1 (Agree)
-    # Rationale: per the BKS_Data_Review interpretation table, ±3 is the first
-    # "clear endorsement" level; ±1/±2 is only a slight/mild lean, so it reads as
-    # effectively neutral on a 3-item summed (powerlessness) or differenced (OCEAN)
-    # composite. Sign-collapse (any nonzero → agree/disagree) overstated endorsement
-    # by bucketing near-zero scores as "Agree." Applied uniformly to all six panels.
-    def to_agreement(series: pd.Series) -> np.ndarray:
+    # Collapse the raw composite score into a 3-band scale at a per-construct
+    # threshold, because OCEAN and powerlessness sit on different ranges:
+    #   • OCEAN (thresh=1, range ±6): score ≥ +1 → Agree, 0 → Neutral, ≤ −1 → Disagree.
+    #     Differenced item already nets opposing framings, so any nonzero residual is
+    #     a directional lean worth counting (only an exact 0 is genuinely balanced).
+    #   • Powerlessness (thresh=3, range ±9): score ≥ +3 → Agree, −2..+2 → Neutral,
+    #     ≤ −3 → Disagree. A 3-item SUM runs to ±9, so per the BKS_Data_Review table
+    #     ±3 is the comparable "clear endorsement" cut (±1/±2 is one mild item → neutral).
+    # The shared y-axis shows word bands only (Disagree/Neutral/Agree); the numeric
+    # cut-points live in the footnote, and powerlessness's wider ±3 band is flagged
+    # there via a † so the differing scale isn't mislabelled on a shared axis.
+    def to_agreement(series: pd.Series, thresh: int) -> np.ndarray:
         v = series.dropna().to_numpy()
         out = np.zeros_like(v, dtype=int)
-        out[v >= 3] = 1
-        out[v <= -3] = -1
+        out[v >= thresh] = 1
+        out[v <= -thresh] = -1
         return out
 
     bin_centres = np.array([-1, 0, 1])
@@ -201,8 +203,9 @@ def figure_personality(df: pd.DataFrame) -> None:
     panel_data = []
     x_max = 0.0
     for col, label in ocean_traits:
-        cgl_a  = to_agreement(cgl_plus[col])
-        rest_a = to_agreement(rest[col])
+        thresh = 3 if col == "powerlessness" else 1   # powerlessness keeps the ±3 band
+        cgl_a  = to_agreement(cgl_plus[col], thresh)
+        rest_a = to_agreement(rest[col], thresh)
         cgl_pct  = np.array([100 * (cgl_a  == k).sum() / max(len(cgl_a),  1) for k in bin_centres])
         rest_pct = np.array([100 * (rest_a == k).sum() / max(len(rest_a), 1) for k in bin_centres])
         panel_data.append((col, label, cgl_pct, rest_pct))
@@ -213,7 +216,7 @@ def figure_personality(df: pd.DataFrame) -> None:
         # Side-by-side horizontal bars: Rest below centre, CGL+ above centre
         ax.barh(bin_centres - bar_h / 2, rest_pct, height=bar_h,
                 color=INK["hairline"], zorder=2,
-                label="Rest" if ax is axes[0] else None)
+                label="CGL−" if ax is axes[0] else None)
         ax.barh(bin_centres + bar_h / 2, cgl_pct, height=bar_h,
                 color=ACCENT["hero"], zorder=3,
                 label="CGL+" if ax is axes[0] else None)
@@ -228,20 +231,22 @@ def figure_personality(df: pd.DataFrame) -> None:
 
         d = cohens_d(cgl_plus[col], non[col])
         ax.text(
-            0.5, -0.16,
-            f"Cohen's d = {d:+.3f}  (trivial)",
+            0.5, -0.10,
+            f"d = {d:+.3f}",
             transform=ax.transAxes, ha="center", va="top",
             fontsize=9, color=INK["tertiary"], style="italic",
         )
 
-        ax.set_title(label, fontsize=12, fontweight="bold",
+        title = f"{label} †" if col == "powerlessness" else label
+        ax.set_title(title, fontsize=13.5, fontweight="bold",
                      color=INK["primary"], pad=8)
-        ax.set_xlabel("% of group", fontsize=10, color=INK["secondary"], labelpad=22)
         ax.set_yticks(bin_centres)
-        ax.set_yticklabels(["≤ −3\nDisagree", "−2…+2\nNeutral", "≥ +3\nAgree"],
-                           fontsize=10, fontweight="bold", color=INK["primary"])
-        ax.set_xlim(0, x_max + 15)
-        ax.tick_params(axis="y", colors=INK["primary"])
+        # Secondary hierarchy: band labels recede (regular weight, smaller, dimmer)
+        # so the bold trait headers read as the primary level.
+        ax.set_yticklabels(["Disagree", "Neutral", "Agree"],
+                           fontsize=9.5, fontweight="normal", color=INK["secondary"])
+        ax.set_xlim(0, x_max + 12)
+        ax.tick_params(axis="y", colors=INK["secondary"])
         ax.tick_params(axis="x", labelsize=9, colors=INK["tertiary"])
         ax.spines[["top", "right", "bottom"]].set_visible(False)
         ax.spines["left"].set_color(INK["hairline"])
@@ -259,23 +264,24 @@ def figure_personality(df: pd.DataFrame) -> None:
 
     # Legend below title, above axes (Rule 1)
     fig.legend(
-        loc="upper left", bbox_to_anchor=(0.005, 0.89),
+        loc="upper left", bbox_to_anchor=(0.005, 0.86),
         ncol=2, frameon=False, labelcolor=INK["secondary"], fontsize=11,
     )
 
     # Source / context note at the bottom
     fig.text(
         0.005, 0.005,
-        f"n CGL+ = {len(cgl_plus):,}   ·   n Rest = {len(rest):,}   "
-        f"(Rest = CGL− [{len(non):,}] + Unknown [{len(rest) - len(non):,}])   ·   "
-        "Cohen's d annotation compares CGL+ vs CGL−; all values fall in the trivial band (|d| < 0.10)\n"
-        "Bands: composite score ≥ +3 = Agree, −2…+2 = Neutral, ≤ −3 = Disagree  "
-        "(±3 = first 'clear endorsement' level; ±1/±2 = slight lean → counted neutral)",
+        f"n CGL+ = {len(cgl_plus):,}   ·   n CGL− = {len(non):,}   "
+        "(Unknown — did not answer the CGL item — excluded as a missing-data category)   ·   "
+        "Cohen's d compares CGL+ vs CGL−; all values fall in the trivial band (|d| < 0.10)\n"
+        "OCEAN bands (differenced items, range ±6): composite ≥ +1 = Agree, 0 = Neutral, ≤ −1 = Disagree.   "
+        "† Powerlessness uses a ±3 band (≥ +3 Agree, −2…+2 Neutral, ≤ −3 Disagree) — its 3-item summed scale "
+        "runs to ±9, so ±3 is the comparable 'clear endorsement' cut.",
         fontsize=9, color=INK["tertiary"], style="italic",
         ha="left", va="bottom",
     )
 
-    fig.tight_layout(rect=[0.0, 0.04, 1.0, 0.86])
+    fig.tight_layout(rect=[0.0, 0.07, 1.0, 0.82], w_pad=0.6)
     plt.savefig(FIG_DIR / "story_01_personality.png", **SAVE_KW)
     plt.close(fig)
 
@@ -335,11 +341,12 @@ def figure_emotion(df: pd.DataFrame) -> None:
                 [pct.loc[cat, "False"], pct.loc[cat, "True"]],
                 [i, i], color=INK["hairline"], lw=2.0, zorder=1,
             )
-        for flag in ["Unknown", "False", "True"]:
+        for flag in ["False", "True"]:
+            lbl = "CGL−" if flag == "False" else "CGL+"
             ax.scatter(
                 pct[flag].values, y_pos,
                 color=color_map[flag], s=size_map[flag], zorder=3,
-                label=f"CGL = {flag}  (n={int(n_counts.get(flag, 0)):,})",
+                label=f"{lbl}  (n={int(n_counts.get(flag, 0)):,})",
                 edgecolor=INK["canvas"], linewidth=1.2,
             )
         # Gap annotation — outside the right spine; colored by sign
@@ -366,7 +373,7 @@ def figure_emotion(df: pd.DataFrame) -> None:
         ax.spines["bottom"].set_color(INK["hairline"])
         # Legend on top, title above it
         ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0),
-                  ncol=3, frameon=False, fontsize=10, labelcolor=INK["secondary"])
+                  ncol=2, frameon=False, fontsize=10, labelcolor=INK["secondary"])
         ax.text(0, 1.14, title, transform=ax.transAxes,
                 fontweight="bold", fontsize=13, color=INK["primary"], va="bottom")
 
@@ -532,7 +539,8 @@ def figure_ds(df: pd.DataFrame) -> None:
     plot_df = df.copy()
     plot_df["cgl_flag"] = plot_df["cgl_flag"].astype(str)
     plot_df = plot_df.dropna(subset=["ds_preference"])
-    flag_order = ["False", "True", "Unknown"]
+    plot_df = plot_df[plot_df["cgl_flag"].isin(["False", "True"])]   # CGL+ vs CGL− only
+    flag_order = ["False", "True"]
     n_per_flag = plot_df["cgl_flag"].value_counts()
     pivot = (
         pd.crosstab(plot_df["cgl_flag"], plot_df["ds_preference"], normalize="index")
@@ -584,7 +592,8 @@ def figure_ds(df: pd.DataFrame) -> None:
     trans = ax_chart.get_yaxis_transform()
     for i, flag in enumerate(flag_order):
         n = int(n_per_flag.get(flag, 0))
-        ax_chart.text(-0.01, i + 0.08, f"CGL = {flag}", transform=trans,
+        flag_label = "CGL−" if flag == "False" else "CGL+"
+        ax_chart.text(-0.01, i + 0.08, flag_label, transform=trans,
                       ha="right", va="bottom", fontsize=11, fontweight="bold")
         ax_chart.text(-0.01, i - 0.08, f"(n = {n:,})", transform=trans,
                       ha="right", va="top", fontsize=9)
@@ -602,14 +611,12 @@ def figure_ds(df: pd.DataFrame) -> None:
         ncol=4, frameon=False, fontsize=9,
     )
 
-    # Stats panel
+    # Stats panel — two-group test (CGL+ vs CGL−); Unknown excluded as missing-data.
     plot_df["ds_rank"] = plot_df["ds_preference"].map(ds_rank)
-    groups = {f: plot_df.loc[plot_df["cgl_flag"] == f, "ds_rank"].values for f in flag_order}
-    groups = {f: g for f, g in groups.items() if len(g) > 0}
-    stat, p_kw = kruskal(*groups.values())
-    n_total = sum(len(g) for g in groups.values())
-    k = len(groups)
-    eta = max(0.0, (stat - k + 1) / (n_total - k)) if n_total > k else 0.0
+    g_pos = plot_df.loc[plot_df["cgl_flag"] == "True", "ds_rank"].values
+    g_neg = plot_df.loc[plot_df["cgl_flag"] == "False", "ds_rank"].values
+    U, p_mwu = mannwhitneyu(g_pos, g_neg, alternative="two-sided")
+    rank_biserial = 1 - 2 * U / (len(g_pos) * len(g_neg))   # effect size, sample-size-independent
 
     def sig_marker(p):
         if p < 0.001: return "***"
@@ -618,21 +625,14 @@ def figure_ds(df: pd.DataFrame) -> None:
         return "ns"
 
     stat_lines = [
-        f"Kruskal-Wallis omnibus (3 groups): H = {stat:.1f}, "
-        f"p = {p_kw:.2g} ({sig_marker(p_kw)})   ·   η² = {eta:.4f}",
+        f"Mann-Whitney U (CGL+ vs CGL−): U = {U:,.0f}, "
+        f"p = {p_mwu:.2g} ({sig_marker(p_mwu)})",
+        f"Effect size: rank-biserial r = {rank_biserial:+.3f}  (negligible; |r| < 0.10)",
+        f"n CGL+ = {len(g_pos):,}   ·   n CGL− = {len(g_neg):,}",
         "",
-        "Pairwise Mann-Whitney U (Bonferroni-corrected):",
-    ]
-    pairs = list(combinations(groups.keys(), 2))
-    for f1, f2 in pairs:
-        _, p_pair = mannwhitneyu(groups[f1], groups[f2], alternative="two-sided")
-        p_adj = min(p_pair * len(pairs), 1.0)
-        stat_lines.append(f"    CGL={f1}  vs  CGL={f2}:  p = {p_adj:.2g}  ({sig_marker(p_adj)})")
-    stat_lines.append("")
-    stat_lines.append(
         "Interpretation: p < .001 means the groups differ.  "
-        "η² ≈ 0.001 means the magnitude is negligible — a real but small tilt."
-    )
+        "r ≈ 0.08 means the magnitude is negligible — a real but small submissive tilt.",
+    ]
     ax_stats.axis("off")
     ax_stats.text(0.0, 1.0, "Significance test", transform=ax_stats.transAxes,
                   ha="left", va="top", fontsize=12, fontweight="bold")
@@ -683,25 +683,22 @@ def figure_roles(df: pd.DataFrame) -> None:
     fig, ax = plt.subplots(figsize=(14, max(7, 0.5 * len(plot))))
     y = np.arange(len(plot))
 
-    # Connector line spans the min..max of the three group %s per row
+    # Connector line spans CGL− .. CGL+ per row (Unknown excluded as missing-data)
     for i, (_, row) in enumerate(plot.iterrows()):
-        lo = min(row["cgl"], row["non"], row["unk"])
-        hi = max(row["cgl"], row["non"], row["unk"])
+        lo = min(row["cgl"], row["non"])
+        hi = max(row["cgl"], row["non"])
         ax.plot([lo, hi], [i, i], color=INK["hairline"], lw=2.0, zorder=1)
 
-    # Draw Unknown first, then False, then True (pink) on top
-    ax.scatter(plot["unk"], y, color=color_map["Unknown"], s=size_map["Unknown"],
-               edgecolor=INK["canvas"], linewidth=1.2, zorder=2,
-               label=f"CGL = Unknown  (n={n_unk:,})")
+    # Draw CGL− then CGL+ (pink) on top
     ax.scatter(plot["non"], y, color=color_map["False"], s=size_map["False"],
                edgecolor=INK["canvas"], linewidth=1.2, zorder=3,
-               label=f"CGL = False  (n={n_non:,})")
+               label=f"CGL−  (n={n_non:,})")
     ax.scatter(plot["cgl"], y, color=color_map["True"], s=size_map["True"],
                edgecolor=INK["canvas"], linewidth=1.2, zorder=4,
-               label=f"CGL = True  (n={n_cgl:,})")
+               label=f"CGL+  (n={n_cgl:,})")
 
     # CGL=True direct % label (next to the pink hero dot)
-    xmax = max(plot["cgl"].max(), plot["non"].max(), plot["unk"].max())
+    xmax = max(plot["cgl"].max(), plot["non"].max())
     for i, (_, row) in enumerate(plot.iterrows()):
         ax.text(row["cgl"] + 0.6, i, f"{row['cgl']:.1f}%",
                 va="center", ha="left",
@@ -732,7 +729,7 @@ def figure_roles(df: pd.DataFrame) -> None:
     ax.grid(axis="x", linestyle=":", alpha=0.4, color=INK["hairline"])
 
     ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0),
-              ncol=3, frameon=False, fontsize=10, labelcolor=INK["secondary"])
+              ncol=2, frameon=False, fontsize=10, labelcolor=INK["secondary"])
     ax.text(0, 1.12,
             "Role desires: CGL respondents over-endorse caregiving-shaped roles",
             transform=ax.transAxes, fontsize=14, fontweight="bold",
@@ -843,10 +840,10 @@ def _dumbbell_panel(ax, df, n_pos, n_neg, n_unk, *, max_x=None,
                        label=f"CGL = Unknown  (n={n_unk:,})")
         ax.scatter(df["neg_pct"], y, color=color_map["False"], s=size_map["False"],
                    edgecolor=INK["canvas"], lw=1.2, zorder=3,
-                   label=f"CGL = False  (n={n_neg:,})")
+                   label=f"CGL−  (n={n_neg:,})")
         ax.scatter(df["pos_pct"], y, color=color_map["True"], s=size_map["True"],
                    edgecolor=INK["canvas"], lw=1.2, zorder=4,
-                   label=f"CGL = True  (n={n_pos:,})")
+                   label=f"CGL+  (n={n_pos:,})")
         gap_col = "gap"
 
     # Direct CGL=True % label next to the pink dot
@@ -924,7 +921,9 @@ def _dumbbell_panel(ax, df, n_pos, n_neg, n_unk, *, max_x=None,
 # ---------------------------------------------------------------------------
 
 def figure_soft_erotic(df: pd.DataFrame) -> pd.DataFrame:
-    soft_cols = [c for c in df.columns if c.startswith("soft_erotic_")]
+    # 'soft_erotic_clear' is a duplicate column of 'enthusiastic consent' (identical values) — drop one.
+    soft_cols = [c for c in df.columns
+                 if c.startswith("soft_erotic_") and c != "soft_erotic_clear"]
     stats = _build_endorsement_stats(df, soft_cols, r"^soft_erotic_")
 
     n_pos = (df["cgl_flag"] == "True").sum()
@@ -944,21 +943,18 @@ def figure_soft_erotic(df: pd.DataFrame) -> pd.DataFrame:
     fig, ax = plt.subplots(figsize=(14, max(7, 0.55 * len(plot))))
     y = np.arange(len(plot))
 
-    # Connector line spans min..max of the three group %s per row
+    # Connector line spans CGL− .. CGL+ per row (Unknown excluded as missing-data)
     for i, row in plot.iterrows():
-        lo = min(row["pos_pct"], row["neg_pct"], row["unk_pct"])
-        hi = max(row["pos_pct"], row["neg_pct"], row["unk_pct"])
+        lo = min(row["pos_pct"], row["neg_pct"])
+        hi = max(row["pos_pct"], row["neg_pct"])
         ax.plot([lo, hi], [i, i], color=INK["hairline"], lw=2.0, zorder=1)
 
-    ax.scatter(plot["unk_pct"], y, color=color_map["Unknown"], s=size_map["Unknown"],
-               edgecolor=INK["canvas"], linewidth=1.2, zorder=2,
-               label=f"CGL = Unknown  (n={n_unk:,})")
     ax.scatter(plot["neg_pct"], y, color=color_map["False"], s=size_map["False"],
                edgecolor=INK["canvas"], linewidth=1.2, zorder=3,
-               label=f"CGL = False  (n={n_neg:,})")
+               label=f"CGL−  (n={n_neg:,})")
     ax.scatter(plot["pos_pct"], y, color=color_map["True"], s=size_map["True"],
                edgecolor=INK["canvas"], linewidth=1.2, zorder=4,
-               label=f"CGL = True  (n={n_pos:,})")
+               label=f"CGL+  (n={n_pos:,})")
 
     # CGL=True direct % label next to the pink dot
     for i, row in plot.iterrows():
@@ -981,7 +977,7 @@ def figure_soft_erotic(df: pd.DataFrame) -> pd.DataFrame:
                 fontsize=10, fontweight="bold", family="monospace",
                 color=gap_color, clip_on=False)
 
-    xmax = max(plot["pos_pct"].max(), plot["neg_pct"].max(), plot["unk_pct"].max())
+    xmax = max(plot["pos_pct"].max(), plot["neg_pct"].max())
     ax.set_xlim(0, xmax * 1.18)
     ax.set_yticks(y)
     ax.set_yticklabels(plot["variable"], fontsize=12, fontweight="bold", color=INK["secondary"])
@@ -992,7 +988,7 @@ def figure_soft_erotic(df: pd.DataFrame) -> pd.DataFrame:
     ax.grid(axis="x", linestyle=":", alpha=0.4, color=INK["hairline"])
 
     ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0),
-              ncol=3, frameon=False, fontsize=10, labelcolor=INK["secondary"])
+              ncol=2, frameon=False, fontsize=10, labelcolor=INK["secondary"])
     ax.text(0, 1.12,
             "Caretaker/caretakee dynamics: 4× more endorsed by CGL respondents (20% vs 5%)",
             transform=ax.transAxes, fontsize=14, fontweight="bold",
@@ -1049,10 +1045,10 @@ def figure_nsfw_acts_positions(nsfw: pd.DataFrame) -> pd.DataFrame:
     n_unk = (nsfw["cgl_flag"] == "Unknown").sum()
 
     fig, ax = plt.subplots(figsize=(14, max(7, 0.45 * len(plot_df))))
-    max_x = max(plot_df["pos_pct"].max(), plot_df["rest_pct"].max()) * 1.22
+    max_x = max(plot_df["pos_pct"].max(), plot_df["neg_pct"].max()) * 1.22
     _dumbbell_panel(
         ax, plot_df, n_pos, n_neg, n_unk,
-        max_x=max_x, pre_sorted=True, compare_mode="vs_rest",
+        max_x=max_x, pre_sorted=True, show_unknown=False,
         group_separators=[sep_after],
         group_labels=[("ACTS", acts_label_y), ("POSITIONS", pos_label_y)],
         highlight_variables=[
@@ -1068,7 +1064,7 @@ def figure_nsfw_acts_positions(nsfw: pd.DataFrame) -> pd.DataFrame:
     )
     fig.text(
         0.5, 0.94,
-        "Sexual acts (top) and positions (bottom) — each block sorted by CGL=True %; gap = CGL+ minus Rest",
+        "Sexual acts (top) and positions (bottom) — each block sorted by CGL+ %; gap = CGL+ minus CGL−",
         ha="center", va="top", fontsize=10, style="italic", color=INK["secondary"],
     )
     plt.tight_layout(rect=[0, 0, 1, 0.94])
@@ -1115,10 +1111,10 @@ def figure_nsfw_common_uncommon(nsfw: pd.DataFrame) -> pd.DataFrame:
     n_unk = (nsfw["cgl_flag"] == "Unknown").sum()
 
     fig, ax = plt.subplots(figsize=(14, max(7, 0.45 * len(plot_df))))
-    max_x = max(plot_df["pos_pct"].max(), plot_df["rest_pct"].max()) * 1.22
+    max_x = max(plot_df["pos_pct"].max(), plot_df["neg_pct"].max()) * 1.22
     _dumbbell_panel(
         ax, plot_df, n_pos, n_neg, n_unk,
-        max_x=max_x, pre_sorted=True, compare_mode="vs_rest",
+        max_x=max_x, pre_sorted=True, show_unknown=False,
         group_separators=[sep_after],
         group_labels=[("COMMON", com_label_y), ("UNCOMMON", unc_label_y)],
         highlight_variables=[
@@ -1134,7 +1130,7 @@ def figure_nsfw_common_uncommon(nsfw: pd.DataFrame) -> pd.DataFrame:
     )
     fig.text(
         0.5, 0.94,
-        "Common (top) and uncommon (bottom) NSFW preferences — each block sorted by CGL=True %; gap = CGL+ minus Rest",
+        "Common (top) and uncommon (bottom) NSFW preferences — each block sorted by CGL+ %; gap = CGL+ minus CGL−",
         ha="center", va="top", fontsize=10, style="italic", color=INK["secondary"],
     )
     plt.tight_layout(rect=[0, 0, 1, 0.94])
@@ -1156,17 +1152,20 @@ def figure_arousal_dual_panel(nsfw: pd.DataFrame) -> pd.DataFrame:
         "regression", "progression", "agegap", "older",
     ]
     # ----- Stats per item -----
+    # Comparator is CGL+ vs CGL− (cgl==0). The Unknown cohort (~100% non-response on the
+    # arousal block) is excluded: pooling it into a "Rest" group inflated several ORs via
+    # differential, item-specific non-response. CGL+ and CGL− both answered these items.
     rows = []
     for col in kink_fields:
         pos = nsfw.loc[nsfw["cgl_flag"] == "True", col].dropna()
-        rest = nsfw.loc[nsfw["cgl_flag"] != "True", col].dropna()
+        neg = nsfw.loc[nsfw["cgl_flag"] == "False", col].dropna()
         a = int((pos >= 1).sum()); b = int((pos == 0).sum())
-        c = int((rest >= 1).sum()); d = int((rest == 0).sum())
-        n_pos_resp, n_rest_resp = a + b, c + d
+        c = int((neg >= 1).sum()); d = int((neg == 0).sum())
+        n_pos_resp, n_neg_resp = a + b, c + d
         p_pos = a / n_pos_resp if n_pos_resp else np.nan
-        p_rest = c / n_rest_resp if n_rest_resp else np.nan
+        p_neg = c / n_neg_resp if n_neg_resp else np.nan
         table = [[a, b], [c, d]]
-        if min(n_pos_resp, n_rest_resp, a + c, b + d) == 0:
+        if min(n_pos_resp, n_neg_resp, a + c, b + d) == 0:
             p_raw = np.nan
         else:
             row_tot = np.array([a + b, c + d])
@@ -1177,7 +1176,7 @@ def figure_arousal_dual_panel(nsfw: pd.DataFrame) -> pd.DataFrame:
             else:
                 _, p_raw, _, _ = chi2_contingency(table, correction=True)
         or_, or_lo, or_hi = or_with_ci(a, b, c, d)
-        h = cohens_h(p_pos, p_rest)
+        h = cohens_h(p_pos, p_neg)
         rows.append({
             "variable": col,
             "cohens_h": h, "or": or_, "or_lo": or_lo, "or_hi": or_hi,
@@ -1200,28 +1199,26 @@ def figure_arousal_dual_panel(nsfw: pd.DataFrame) -> pd.DataFrame:
     res["tier"] = res.apply(tier, axis=1)
     res = res.reindex(res["cohens_h"].abs().sort_values(ascending=False).index).reset_index(drop=True)
 
-    # ----- Yes/No/NaN rates per group (denominator = each group's total) -----
+    # ----- Yes/No rates per group (denominator = each group's responders) -----
     pos_mask = nsfw["cgl_flag"] == "True"
+    neg_mask = nsfw["cgl_flag"] == "False"
     n_pos = int(pos_mask.sum())
-    n_rest = int((~pos_mask).sum())
-    # Rates computed over RESPONDERS (NaN dropped) so the bars compare like-with-like
-    # and match the OR/forest panel. The previous full-group denominator made the
-    # CGL-gated items (regression/progression/agegap/older) misleading: the Rest bar
-    # was ~90% "NaN" because the Unknown cohort was never *asked* the gated questions,
-    # which reads as "Rest isn't aroused" when it actually means "Rest wasn't asked."
-    # The per-group response rate is disclosed in each item's header instead.
+    n_neg = int(neg_mask.sum())
+    # Rates computed over RESPONDERS (NaN dropped) so the bars match the OR/forest panel.
+    # Both CGL+ and CGL− answered the arousal block at ~100% (they engaged the CGL item),
+    # so unlike the old "Rest" comparator there is no differential-non-response artifact.
     rates = {}
     for k in res["variable"]:
         x = nsfw[k]
         pos_resp = int((x.notna() & pos_mask).sum())
-        rest_resp = int((x.notna() & ~pos_mask).sum())
+        neg_resp = int((x.notna() & neg_mask).sum())
         rates[k] = dict(
             pos_yes=((x >= 1) & pos_mask).sum() / pos_resp if pos_resp else 0.0,
             pos_no=((x == 0) & pos_mask).sum() / pos_resp if pos_resp else 0.0,
             pos_resprate=pos_resp / n_pos if n_pos else 0.0,
-            rest_yes=((x >= 1) & ~pos_mask).sum() / rest_resp if rest_resp else 0.0,
-            rest_no=((x == 0) & ~pos_mask).sum() / rest_resp if rest_resp else 0.0,
-            rest_resprate=rest_resp / n_rest if n_rest else 0.0,
+            neg_yes=((x >= 1) & neg_mask).sum() / neg_resp if neg_resp else 0.0,
+            neg_no=((x == 0) & neg_mask).sum() / neg_resp if neg_resp else 0.0,
+            neg_resprate=neg_resp / n_neg if n_neg else 0.0,
         )
 
     # ----- Plot -----
@@ -1252,7 +1249,7 @@ def figure_arousal_dual_panel(nsfw: pd.DataFrame) -> pd.DataFrame:
         c_tier = TIER_COLORS[row["tier"]]
         y_top, y_bot = i * 2 + 0.4, i * 2 + 1.1
 
-        for y, prefix, alpha in [(y_top, "pos", 1.0), (y_bot, "rest", 0.78)]:
+        for y, prefix, alpha in [(y_top, "pos", 1.0), (y_bot, "neg", 0.78)]:
             yes = rates[k][f"{prefix}_yes"]
             no_ = rates[k][f"{prefix}_no"]
             axL.barh(y, yes, color=C_YES, alpha=alpha, edgecolor="white")
@@ -1262,14 +1259,14 @@ def figure_arousal_dual_panel(nsfw: pd.DataFrame) -> pd.DataFrame:
 
         axL.text(-0.01, y_top, "CGL+", ha="right", va="center",
                  fontsize=8.5, fontweight="bold")
-        axL.text(-0.01, y_bot, "Rest", ha="right", va="center", fontsize=8.5)
+        axL.text(-0.01, y_bot, "CGL−", ha="right", va="center", fontsize=8.5)
         axL.text(0, y_top - 0.55, f"{k}   {TIER_BADGE[row['tier']]}",
                  ha="left", va="bottom", fontsize=10.5, fontweight="bold", color=c_tier)
-        # Disclose how many of each group actually answered (replaces NaN bar).
-        # Bars are among respondents; for gated items Rest's % answered is low.
+        # Disclose how many of each group actually answered (both ~100% — no differential
+        # non-response now that Unknown is excluded; shown for transparency).
         axL.text(1.0, y_top - 0.55,
                  f"answered:  CGL+ {rates[k]['pos_resprate']*100:.0f}%  ·  "
-                 f"Rest {rates[k]['rest_resprate']*100:.0f}%",
+                 f"CGL− {rates[k]['neg_resprate']*100:.0f}%",
                  ha="right", va="bottom", fontsize=7.5, color=INK["tertiary"])
 
         y_mid = (y_top + y_bot) / 2
@@ -1298,7 +1295,7 @@ def figure_arousal_dual_panel(nsfw: pd.DataFrame) -> pd.DataFrame:
     ]))
     axR.xaxis.set_minor_locator(FixedLocator([]))
     axR.tick_params(axis="x", labelsize=9)
-    axR.set_xlabel("Odds of endorsing  (CGL+ vs Rest)", fontsize=9)
+    axR.set_xlabel("Odds of endorsing  (CGL+ vs CGL−)", fontsize=9)
     axR.spines[["top", "right", "left"]].set_visible(False)
 
     # Header: title + sample sizes + caption
@@ -1307,13 +1304,13 @@ def figure_arousal_dual_panel(nsfw: pd.DataFrame) -> pd.DataFrame:
         fontsize=14, fontweight="bold", y=0.995,
     )
     fig.text(0.5, 0.965,
-             f"CGL+ n = {n_pos:,}   ·   Rest n = {n_rest:,}   ·   "
-             "left bars = arousing vs not among respondents (% answered per row; "
-             "CGL-gated age items are unasked for most of Rest)",
+             f"CGL+ n = {n_pos:,}   ·   CGL− n = {n_neg:,}   ·   "
+             "left bars = arousing vs not among respondents "
+             "(both groups answered the arousal block at ~100% — no differential non-response)",
              ha="center", va="top", fontsize=10, style="italic", color="#555")
     caption = (
         "How to read each forest row:  OR  ·  h  ·  p\n"
-        "  OR  (odds ratio, log axis) — odds of endorsing in CGL+ ÷ Rest.  null = 1×.  "
+        "  OR  (odds ratio, log axis) — odds of endorsing in CGL+ ÷ CGL−.  null = 1×.  "
         "2× = twice as likely · 0.5× = half as likely.  CI crossing 1× → not significant.\n"
         "  h   (Cohen's h)            — base-rate-normalized effect size.  "
         "|h| 0.2 small · 0.5 medium · 0.8 large.  Sign = direction (+ = CGL+ higher).\n"

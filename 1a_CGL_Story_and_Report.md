@@ -170,51 +170,45 @@ There are common stereotypes about CGL dynamics evaluated through data:
 
 This highlight has three pieces: which **acts** CGL respondents prefer, which **scenes** they prefer, and what they find **arousing**. The biggest signal lives in scenes and arousal — not in the mechanics of specific acts.
 
+> **⚠ How to read 6a & 6b — profile, not scoreboard.** CGL+ endorses *almost everything* a bit more — the group is **defined** by saying "yes" to a kink item, and kink endorsements travel together, so every item inherits a baseline lift. A raw "+X%" is therefore partly just that lift, not proof the item is special. What's diagnostic is **shape**:
+> - **Trust the nulls.** Where the two groups sit level (the universal acts in 6a), the survey is showing it *can* register "no difference" → the gaps that *do* open up are real, not yea-saying.
+> - **Rank by Cohen's h, not raw points.** h is base-rate-normalized: +10pt off a *low* base beats +10pt off an already-popular one. Big gaps on common items shrink once you normalize.
+> - **One line to a reader:** "CGL likes a bit more of everything; the story is *which* things rise above that — and they cluster into one shape."
+
 ### 6a · Acts & positions
 
-> **Vaginal fingering is universal; fingering mouths is 8.5 points higher for CGL. The act-level signal is real but small.**
+> **Glance:** the near-universal acts barely move (the honest baseline) → CGL's edge is a thin face/mouth/control subset, *not* "more sex."
 
 ![NSFW endorsements — sexual acts + positions, top items by CGL+ vs CGL− gap](figures/story_06a_nsfw_acts_positions.png)
 
-- **Baseline acts are nearly universal.** Vaginal fingering, oral sex, standard intercourse: 70–85% in both groups, with almost no gap. 
-- **The acts CGL respondents prefer most** (over not CGL respondents) **are face and control sex acts.**
-  - Fingering mouths: +8.5%
-  - Facefucking: +7.1%
-  - Facesitting: +5.9%
-  - Facials: +5.2%
-  - Spanking: +5.6%
+- **Start where the gap vanishes — that's the proof.** The popular acts (vaginal fingering, oral, standard intercourse) sit at **70–85% in *both* groups, near-zero gap.** If CGL just ticked more boxes, these would rise too — they don't. So the survey *can* show "no difference," and the gaps that open up below are real signal, not yea-saying.
+- **The gap concentrates on one coherent subset — face & control acts:**
+  - Fingering mouths +8.5% (h=0.17)
+  - Facefucking +7.1% (h=0.15)
+  - Facesitting +5.9% (h=0.12)
+  - Spanking +5.6% (h=0.12)
+  - Facials +5.2% (h=0.11)
+- **Positions barely differ** (top items ~5%, h≈0.10 — at the "barely noticeable" floor).
 
-- **Positions show smaller differences (~2-4%).** 
-
-> **The takeaway:** CGL respondents like face-focused and control-focused acts more, but most sexual acts are popular across all groups. The bigger story is at the *scene / roleplay* level (vs specific sexual acts/positions).
+> **The takeaway:** CGL's act-level signal isn't *how much* sex — it's *which flavor*: a thin face/mouth/control slice on top of an otherwise-identical baseline. The bigger story is at the scene level (6b), not the mechanics.
 
 ### 6b · Scenes (the real signal)
 
-> **Gentleness and consensual non-consent fantasies are the two largest preference gaps for CGL respondents.
-<br>This highlights the scene preference is soft but also intense, inside an asymmetric frame.**
+> **Glance:** four linked scenes rise *together* — gentleness + non-consent + power + humiliation. The *co-movement* is the finding, not any single bar (even the biggest is only a small–moderate effect).
 
 ![NSFW endorsements — common + uncommon preferences, top items by CGL+ vs CGL− gap](figures/story_06b_nsfw_common_uncommon.png)
 
-- **The biggest gaps appear in *sexual scenes*, not in sexual acts.** 
-  - Gentleness: +13.8%
-  - Consensual non-consent (CNC) fantasy: +13.4%
-  - Power dynamics & D/s: +11.9%
-  - Humiliation: +11.7%
-  - Sadomasochism: +11.2%
+- **Don't read the top bar — read the cluster.** The signal isn't "+13.8 on gentleness." It's that four structurally-linked scenes all rise together:
+  - Gentleness +13.8% (h=0.28)
+  - Non-consent (CNC) fantasy +13.4% (h=0.27)
+  - Power dynamics & D/s +11.9% (h=0.25)
+  - Humiliation +11.7% (h=0.25)
+  - (+ sadomasochism +11.2%, h=0.23)
+- **What stands out is size.** Even the largest is **h≈0.28 — small-to-moderate, not a chasm.** What carries the finding is the *consistency of direction* across related items, not the magnitude of any one.
+- **The cluster has a shape.** Gentleness = the caring register; non-consent / power / humiliation = the asymmetric frame the scene sits inside. Soft on the inside, unequal on the outside — the same CGL structure, now at the kink-preference level. (These aren't contradictions — they're the two halves of one scene.)
+- **Scenes (+11–14%) dwarf acts (+5–8%).** If you want to understand CGL sexually, look at the *kind of scene*, not the mechanics of what they do.
 
-- **Less common preferences also show big CGL gaps.**
-  - Mental alteration: +10.9%
-  - Bodily secretions: +9.7%
-  - Nonstandard objects: +9.8%
-
-- **Gentleness and consenual-non-consent experienced together tell the whole story.**
-  - These aren't contradictions.
-    - Gentleness = the caring, nurturing register
-    - Non-consent fantasy = the power-asymmetric frame the scene happens inside.
-  - Together: *soft caregiving inside a power-unequal structure.* This is the preferred CGL scene.
-- **Scene gaps (+11–14%) are much larger than act-level gaps (+5–8%).** If you want to understand CGL sexually, look at the kind of scene people want, not the mechanics of what they do.
-
-> **The takeaway:** CGL respondents want scenes that are tender on the inside and asymmetric on the outside — gentleness wrapped in a power dynamic.
+> **The takeaway:** CGL respondents want scenes tender on the inside and asymmetric on the outside. Read the gap table as a *profile* — the co-rising cluster is the point, not the leaderboard.
 
 ### 6c · Arousal (the clearest signal)
 

@@ -782,8 +782,7 @@ def _build_endorsement_stats(df: pd.DataFrame, var_cols, prefix_re: str) -> pd.D
 def _dumbbell_panel(ax, df, n_pos, n_neg, n_unk, *, max_x=None,
                     show_unknown=True, sort_ascending=True, pre_sorted=False,
                     group_separators=None, group_labels=None,
-                    compare_mode="all_three",
-                    highlight_variables=None):
+                    compare_mode="all_three"):
     """Standard dot-plot panel matching the Highlight 4/5 style.
 
     compare_mode:
@@ -846,10 +845,10 @@ def _dumbbell_panel(ax, df, n_pos, n_neg, n_unk, *, max_x=None,
                    label=f"CGL+  (n={n_pos:,})")
         gap_col = "gap"
 
-    # Direct CGL=True % label next to the pink dot
+    # Direct CGL+ % label, centered just above the pink dot (on top of the dot).
     for i, row in df.iterrows():
-        ax.text(row["pos_pct"] + 0.6, i, f"{row['pos_pct']:.1f}%",
-                va="center", ha="left",
+        ax.text(row["pos_pct"], i + 0.28, f"{row['pos_pct']:.0f}%",
+                va="bottom", ha="center", zorder=6,
                 fontsize=10, fontweight="bold", color=INK["primary"])
 
     # Gap annotation outside the right spine, colored by sign
@@ -859,30 +858,25 @@ def _dumbbell_panel(ax, df, n_pos, n_neg, n_unk, *, max_x=None,
         else:
             max_x = max(df["pos_pct"].max(), df["neg_pct"].max(), df["unk_pct"].max()) * 1.18
     _trans = blended_transform_factory(ax.transAxes, ax.transData)
-    hl_terms = [s.lower() for s in (highlight_variables or [])]
+    # Every gap is the same measure (CGL+ − CGL−), so every gap is one colour:
+    # green = CGL+ higher, red = CGL− higher. "Which gaps matter" lives in the
+    # summary table's Strength column, NOT in the gap colour.
     for i, row in df.iterrows():
         gap = row[gap_col]
-        var_name = str(row["variable"]).lower()
-        is_highlighted = (not hl_terms) or any(t in var_name for t in hl_terms)
-        if is_highlighted:
-            if gap > 0:
-                gap_color = SEMANTIC["good"]
-            elif gap < 0:
-                gap_color = SEMANTIC["bad"]
-            else:
-                gap_color = INK["secondary"]
-            weight = "bold"
+        if gap > 0:
+            gap_color = SEMANTIC["good"]
+        elif gap < 0:
+            gap_color = SEMANTIC["bad"]
         else:
-            gap_color = INK["tertiary"]
-            weight = "regular"
-        ax.text(1.02, i, f"{gap:+.1f}%",
+            gap_color = INK["secondary"]
+        ax.text(1.02, i, f"{gap:+.0f}%",
                 transform=_trans, va="center", ha="left",
-                fontsize=10, fontweight=weight, family="monospace",
+                fontsize=10, fontweight="bold", family="monospace",
                 color=gap_color, clip_on=False)
 
     ax.set_yticks(y)
-    ax.set_yticklabels(df["variable"], fontsize=12, fontweight="bold",
-                       color=INK["secondary"])
+    ax.set_yticklabels(df["variable"], fontsize=12, fontweight="normal",
+                       color=INK["primary"])
     ax.set_xlim(0, max_x)
     ax.set_xlabel("% of group endorsing", fontsize=11)
     ax.spines[["top", "right"]].set_visible(False)
@@ -907,13 +901,75 @@ def _dumbbell_panel(ax, df, n_pos, n_neg, n_unk, *, max_x=None,
 
     if group_labels:
         for text, y_pos in group_labels:
+            # Family label OUTSIDE the chart, to the left of the data labels.
             ax.text(
-                1.12, y_pos, text,
+                -0.34, y_pos, text,
                 transform=ax.get_yaxis_transform(),
-                ha="left", va="center",
-                fontsize=10, fontweight="bold", color=INK["secondary"],
-                rotation=90,
+                ha="center", va="center", rotation=90, rotation_mode="anchor",
+                fontsize=12, fontweight="bold", color=INK["primary"], zorder=5,
+                clip_on=False,
             )
+
+
+# ---------------------------------------------------------------------------
+# Summary table drawn above a dumbbell chart (Highlight 6a / 6b)
+# ---------------------------------------------------------------------------
+
+def _h_band(h):
+    """Plain-language strength band for a Cohen's h effect size."""
+    a = abs(h)
+    if a < 0.10:
+        return "none"
+    if a < 0.20:
+        return "weak"
+    if a < 0.50:
+        return "moderate"
+    return "strong"
+
+
+_BAND_COLOR = {
+    "none":     INK["hairline"],
+    "weak":     ACCENT["soft"],
+    "moderate": ACCENT["mid"],
+    "strong":   ACCENT["hero"],
+}
+
+
+def _summary_table(ax, rows, first_header="Item"):
+    """Compact summary table on its own blank axes, sitting above the chart.
+
+    rows: list of (item, cgl_plus_str, cgl_minus_str, diff_str, strength_word),
+    where strength_word is one of none/weak/moderate/strong (also the chip-colour key).
+    Diff is green to match the chart's gap callout; Strength is a colour-coded chip.
+    """
+    ax.axis("off")
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    cols_x = [0.012, 0.44, 0.56, 0.68, 0.80]
+    aligns = ["left", "center", "center", "center", "left"]
+    headers = [first_header, "CGL+", "CGL−", "Diff", "Strength"]
+    n = len(rows)
+    top, bot = 0.92, 0.10
+    step = (top - bot) / n
+    for htext, x, a in zip(headers, cols_x, aligns):
+        ax.text(x, top, htext, ha=a, va="center", fontsize=11,
+                fontweight="bold", color=INK["primary"])
+    ax.plot([0.0, 1.0], [top - step * 0.55] * 2, color=INK["secondary"], lw=1.1)
+    for i, r in enumerate(rows):
+        item, cp, cm, diff, strength = r
+        y = top - step * (i + 1)
+        ax.text(cols_x[0], y, item, ha="left", va="center",
+                fontsize=10.5, color=INK["primary"])
+        ax.text(cols_x[1], y, cp, ha="center", va="center",
+                fontsize=10.5, color=INK["secondary"])
+        ax.text(cols_x[2], y, cm, ha="center", va="center",
+                fontsize=10.5, color=INK["secondary"])
+        ax.text(cols_x[3], y, diff, ha="center", va="center",
+                fontsize=10.5, fontweight="bold", color=SEMANTIC["good"])
+        ax.text(cols_x[4], y, strength, ha="left", va="center",
+                fontsize=10.5, fontweight="bold", color=INK["primary"],
+                bbox=dict(boxstyle="round,pad=0.3", facecolor=_BAND_COLOR[strength],
+                          alpha=0.5, edgecolor="none"))
 
 
 # ---------------------------------------------------------------------------
@@ -1017,57 +1073,87 @@ def figure_nsfw_acts_positions(nsfw: pd.DataFrame) -> pd.DataFrame:
     pos_stats = _build_endorsement_stats(nsfw, pos_cols, r"^pos_")
     pos_stats["family"] = "Positions"
 
-    # Take top N from each family separately, by signed gap descending.
-    n_acts = min(10, len(acts_stats))
-    n_pos_items = min(10, len(pos_stats))
-    acts_top = acts_stats.sort_values("gap", ascending=False).head(n_acts).copy()
-    pos_top = pos_stats.sort_values("gap", ascending=False).head(n_pos_items).copy()
+    # Anchor rows — near-universal acts that are FLAT across CGL groups.
+    # Auto-selected (NOT hardcoded): high endorsement + negligible gap. They are the
+    # built-in control — if CGL just "said yes to everything," these would rise too.
+    # They don't, so the spikes below are real signal, not a response-style artifact.
+    anchor_mask = (acts_stats["pos_pct"] >= 60) & (acts_stats["gap"].abs() < 2.5)
+    anchors = (acts_stats[anchor_mask]
+               .sort_values("pos_pct", ascending=False).head(3).copy())
+    anchor_names = set(anchors["variable"])
 
-    # Pre-sort: positions block at the bottom, acts block above.
-    # Within each block, sort ASC by CGL=True endorsement so the highest %
-    # ends up at the visual top of the block.
-    pos_block = pos_top.sort_values("pos_pct", ascending=True)
-    acts_block = acts_top.sort_values("pos_pct", ascending=True)
-    plot_df = pd.concat([pos_block, acts_block], ignore_index=True)
+    # Distinctive acts = largest gaps, excluding the flat anchors.
+    distinctive = (acts_stats[~acts_stats["variable"].isin(anchor_names)]
+                   .sort_values("gap", ascending=False).head(6).copy())
+    pos_top = pos_stats.sort_values("gap", ascending=False).head(min(6, len(pos_stats))).copy()
 
-    # Prefix labels with family
-    plot_df["variable"] = plot_df.apply(
-        lambda r: f"[{r['family'][:3].lower()}] {r['variable']}", axis=1
-    )
+    # Stack bottom→top: positions · distinctive acts · near-universal anchors (flat, on top).
+    # Within each block, order by gap (numeric difference) — ascending sort puts the
+    # LARGEST gap at the TOP of its block (fingering mouths leads the distinctive acts;
+    # handjobs leads the near-universal ones).
+    pos_block = pos_top.sort_values("gap", ascending=True)
+    dist_block = distinctive.sort_values("gap", ascending=True)
+    anchor_block = anchors.sort_values("gap", ascending=True)
+    plot_df = pd.concat([pos_block, dist_block, anchor_block], ignore_index=True)
 
-    # Family group geometry for separator + side labels (row indices in display order)
-    sep_after = len(pos_block) - 1  # divider between positions (below) and acts (above)
+    # Family-level geometry: keep both separators (baseline vs distinctive, acts vs
+    # positions), but label each family ONCE, centered, on the left.
+    sep_pos = len(pos_block) - 1
+    sep_dist = len(pos_block) + len(dist_block) - 1
     pos_label_y = (len(pos_block) - 1) / 2.0
-    acts_label_y = len(pos_block) + (len(acts_block) - 1) / 2.0
+    acts_label_y = (len(pos_block) + len(plot_df) - 1) / 2.0
 
     n_pos = (nsfw["cgl_flag"] == "True").sum()
     n_neg = (nsfw["cgl_flag"] == "False").sum()
     n_unk = (nsfw["cgl_flag"] == "Unknown").sum()
 
-    fig, ax = plt.subplots(figsize=(14, max(7, 0.45 * len(plot_df))))
+    fig = plt.figure(figsize=(14, max(7, 0.5 * len(plot_df)) + 2.4))
+    ax = fig.add_subplot(111)
     max_x = max(plot_df["pos_pct"].max(), plot_df["neg_pct"].max()) * 1.22
     _dumbbell_panel(
         ax, plot_df, n_pos, n_neg, n_unk,
         max_x=max_x, pre_sorted=True, show_unknown=False,
-        group_separators=[sep_after],
-        group_labels=[("ACTS", acts_label_y), ("POSITIONS", pos_label_y)],
-        highlight_variables=[
-            "fingering mouths", "facefucking", "facesitting", "spanking", "facials",
-            "spooning", "reverse cowgirl",
-        ],
+        group_separators=[sep_pos, sep_dist],
+        group_labels=[("POSITIONS", pos_label_y), ("ACTS", acts_label_y)],
     )
     ax.set_xticks([0, 20, 40, 60, 80, 100])
 
+    # Shade the anchor band so the "flat baseline" reads at a glance.
+    for i in range(len(pos_block) + len(dist_block), len(plot_df)):
+        ax.axhspan(i - 0.5, i + 0.5, color=INK["hairline"], alpha=0.22, zorder=0)
+
+    # Summary table (top): the few acts that lead + the flat baseline, with strength.
+    top3 = distinctive.sort_values("gap", ascending=False).head(3)
+    table_rows = [
+        (r["variable"], f"{r['pos_pct']:.0f}%", f"{r['neg_pct']:.0f}%",
+         f"+{r['gap']:.0f}", _h_band(r["h"]))
+        for _, r in top3.iterrows()
+    ]
+    table_rows.append(("near-universal acts", "70–85%", "70–85%", "+0–2", "none"))
+
     fig.suptitle(
-        "Face- and control-focused acts show the largest CGL gaps — fingering mouths leads",
-        fontweight="bold", fontsize=14, y=0.99,
+        "CGL's edge is a specific flavor — not 'more sex'",
+        fontweight="bold", fontsize=15, y=0.985,
     )
     fig.text(
-        0.5, 0.94,
-        "Sexual acts (top) and positions (bottom) — each block sorted by CGL+ %; gap = CGL+ minus CGL−",
-        ha="center", va="top", fontsize=10, style="italic", color=INK["secondary"],
+        0.5, 0.050,
+        f"Big Kink Survey  ·  CGL+ n={n_pos:,} vs CGL− n={n_neg:,}  ·  dots = % endorsing  ·  "
+        "Strength = effect size (Cohen's h): under .10 none · .10–.20 weak · .20–.50 moderate  ·  "
+        "near-universal acts ≈ no gap → not just 'CGL endorses everything.'",
+        ha="center", va="bottom", fontsize=8, color=INK["tertiary"], style="italic",
     )
-    plt.tight_layout(rect=[0, 0, 1, 0.94])
+    # Legend for the green callout — very bottom, in green to match the numbers.
+    fig.text(
+        0.5, 0.013,
+        "Green +% on the right = the gap between the two dots (CGL+ minus CGL−) — "
+        "how much MORE the CGL+ group endorses each item.",
+        ha="center", va="bottom", fontsize=9, fontweight="bold", color=SEMANTIC["good"],
+        bbox=dict(boxstyle="round,pad=0.3", facecolor=SEMANTIC["good"], alpha=0.12,
+                  edgecolor="none"),
+    )
+    fig.tight_layout(rect=[0, 0.06, 1, 0.78])
+    ax_tbl = fig.add_axes([0.07, 0.80, 0.86, 0.13])
+    _summary_table(ax_tbl, table_rows, first_header="Act")
     plt.savefig(FIG_DIR / "story_06a_nsfw_acts_positions.png", **SAVE_KW)
     plt.close(fig)
     return pd.concat([acts_stats, pos_stats], ignore_index=True)
@@ -1087,53 +1173,83 @@ def figure_nsfw_common_uncommon(nsfw: pd.DataFrame) -> pd.DataFrame:
     unc_stats["family"] = "Uncommon"
 
     # Top N from each family separately
-    n_com = min(10, len(com_stats))
-    n_unc = min(10, len(unc_stats))
+    n_com = min(8, len(com_stats))
+    n_unc = min(6, len(unc_stats))
     com_top = com_stats.sort_values("gap", ascending=False).head(n_com).copy()
     unc_top = unc_stats.sort_values("gap", ascending=False).head(n_unc).copy()
 
-    # Common above (top of chart), Uncommon below (bottom of chart).
-    # Within each block, sort ASC by CGL=True endorsement (highest at top of block).
-    unc_block = unc_top.sort_values("pos_pct", ascending=True)
-    com_block = com_top.sort_values("pos_pct", ascending=True)
+    # Group the co-rising cluster CONTIGUOUSLY at the top of the common block, so it
+    # reads as one signal (theme-grouped, not magnitude-sorted). The point of 6b is the
+    # co-movement of these scenes, not any single bar — make that legible by adjacency.
+    cluster_items = ["gentleness", "nonconsent", "power dynamics & d/s",
+                     "humiliation", "sadomasochism"]
+    cl_mask = com_top["variable"].isin(cluster_items)
+    # Within each block, order by gap (numeric difference) — ascending sort puts the
+    # LARGEST gap at the TOP of its block (gentleness leads the cluster, etc.).
+    com_cluster = com_top[cl_mask].sort_values("gap", ascending=True)
+    com_rest = com_top[~cl_mask].sort_values("gap", ascending=True)
+    com_block = pd.concat([com_rest, com_cluster])           # cluster on top
+    unc_block = unc_top.sort_values("gap", ascending=True)
     plot_df = pd.concat([unc_block, com_block], ignore_index=True)
 
-    plot_df["variable"] = plot_df.apply(
-        lambda r: f"[{r['family'][:3].lower()}] {r['variable']}", axis=1
-    )
-
-    sep_after = len(unc_block) - 1
+    # Family-level geometry: keep both separators (cluster vs rest, common vs uncommon),
+    # but label each family ONCE, centered, on the left.
+    sep_unc = len(unc_block) - 1
+    sep_rest = len(unc_block) + len(com_rest) - 1
     unc_label_y = (len(unc_block) - 1) / 2.0
-    com_label_y = len(unc_block) + (len(com_block) - 1) / 2.0
+    com_label_y = (len(unc_block) + len(plot_df) - 1) / 2.0
+    cl_lo = len(unc_block) + len(com_rest)
+    cl_hi = len(plot_df) - 1
 
     n_pos = (nsfw["cgl_flag"] == "True").sum()
     n_neg = (nsfw["cgl_flag"] == "False").sum()
     n_unk = (nsfw["cgl_flag"] == "Unknown").sum()
 
-    fig, ax = plt.subplots(figsize=(14, max(7, 0.45 * len(plot_df))))
+    fig = plt.figure(figsize=(14, max(7, 0.5 * len(plot_df)) + 2.4))
+    ax = fig.add_subplot(111)
     max_x = max(plot_df["pos_pct"].max(), plot_df["neg_pct"].max()) * 1.22
     _dumbbell_panel(
         ax, plot_df, n_pos, n_neg, n_unk,
         max_x=max_x, pre_sorted=True, show_unknown=False,
-        group_separators=[sep_after],
-        group_labels=[("COMMON", com_label_y), ("UNCOMMON", unc_label_y)],
-        highlight_variables=[
-            "gentleness", "nonconsent", "power dynamics", "humiliation", "sadomasochism",
-            "mental alteration", "bodily secretions", "nonstandard",
-        ],
+        group_separators=[sep_unc, sep_rest],
+        group_labels=[("UNCOMMON", unc_label_y), ("COMMON", com_label_y)],
     )
     ax.set_xticks([0, 20, 40, 60, 80, 100])
 
+    # Shade the cluster band so "these rise together" reads at a glance.
+    ax.axhspan(cl_lo - 0.5, cl_hi + 0.5, color=ACCENT["soft"], alpha=0.28, zorder=0)
+
+    # Summary table (top): the cluster scenes that rise together, with strength.
+    top4 = com_cluster.sort_values("gap", ascending=False).head(4)
+    table_rows = [
+        (r["variable"], f"{r['pos_pct']:.0f}%", f"{r['neg_pct']:.0f}%",
+         f"+{r['gap']:.0f}", _h_band(r["h"]))
+        for _, r in top4.iterrows()
+    ]
+
     fig.suptitle(
-        "Gentleness and nonconsent lead the CGL scene signal",
-        fontweight="bold", fontsize=14, y=0.99,
+        "The CGL scene signal is a cluster, not a single item",
+        fontweight="bold", fontsize=15, y=0.985,
     )
     fig.text(
-        0.5, 0.94,
-        "Common (top) and uncommon (bottom) NSFW preferences — each block sorted by CGL+ %; gap = CGL+ minus CGL−",
-        ha="center", va="top", fontsize=10, style="italic", color=INK["secondary"],
+        0.5, 0.050,
+        f"Big Kink Survey  ·  CGL+ n={n_pos:,} vs CGL− n={n_neg:,}  ·  dots = % endorsing  ·  "
+        "Strength = effect size (Cohen's h): .10–.20 weak · .20–.50 moderate  ·  "
+        "the cluster sits at moderate (h ≈ .25) — bigger than any single act.",
+        ha="center", va="bottom", fontsize=8, color=INK["tertiary"], style="italic",
     )
-    plt.tight_layout(rect=[0, 0, 1, 0.94])
+    # Legend for the green callout — very bottom, in green to match the numbers.
+    fig.text(
+        0.5, 0.013,
+        "Green +% on the right = the gap between the two dots (CGL+ minus CGL−) — "
+        "how much MORE the CGL+ group endorses each item.",
+        ha="center", va="bottom", fontsize=9, fontweight="bold", color=SEMANTIC["good"],
+        bbox=dict(boxstyle="round,pad=0.3", facecolor=SEMANTIC["good"], alpha=0.12,
+                  edgecolor="none"),
+    )
+    fig.tight_layout(rect=[0, 0.06, 1, 0.78])
+    ax_tbl = fig.add_axes([0.07, 0.80, 0.86, 0.13])
+    _summary_table(ax_tbl, table_rows, first_header="Scene")
     plt.savefig(FIG_DIR / "story_06b_nsfw_common_uncommon.png", **SAVE_KW)
     plt.close(fig)
     return pd.concat([com_stats, unc_stats], ignore_index=True)

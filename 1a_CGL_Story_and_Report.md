@@ -39,6 +39,8 @@ CGL (Caregiving dynamics) is a **relational kink structured around one partner c
 
 **Multiple-comparison & CI policy.** The distribution/gap tables (Chapters 2, 4, 5, 6-endorsements) are **descriptive** — per-item effect sizes with no per-cell significance test, because the substantive question is *which items drive the difference*, not whether a 15-category table differs overall. The one place a formal family of tests is run — the 18-item **arousal scale** (Chapter 6) — carries **Benjamini-Hochberg FDR correction** and Wald 95% CIs on every odds ratio. CIs are reported where a test is run; gap tables are labeled descriptive.
 
+**Reading low percentages (prevalence ≠ patterning).** Many cells are small in absolute terms — single-pick items impose a 1/n floor (~20 emotions → even a *modal* pick caps ~25%), and multi-select items inherit low base rates. **A low % is not a weak signal.** Separate two quantities: *prevalence* (how common — the %) and *patterning* (does the signal align in the predicted direction, tightly estimated). The load-bearing evidence in every low-% table here is **patterning** — directional consistency (the D/S mirror, Ch. 2) and co-movement across linked items (the scene cluster, Ch. 6) — **not the height of any single bar**. Under chance, low cells scatter; here they align systematically, and at n ≈ 800–4,000 each cell is tightly estimated (95% CI ±0.7–2.8pp). ∴ low-but-consistent ⇒ a *reliable minority* signal: the licensed claim is "a consistent signal toward X," never "most respondents want X." ⚠ do **not** attach a "small sample / interpret with caution" hedge to these cells — n is large and CIs are narrow; the smallness lives in the *share*, not the *certainty*.
+
 ---
 
 ## Findings
@@ -362,6 +364,8 @@ Splitting CGL-positive respondents by D/S preference exposes the complementarity
 | Dominant (n=845)     |               5.8 |          14.8 |                 20.1 |              4.2 |
 
 _Cells are % among responders to each emotion item, so subgroup n's are the emotion-item responders within each D/S camp (sum ≈ the 2,777 who answered the D/S item)._
+
+> ⚠ **Low share, consistent shape — read the mirror, not the height.** Absolute shares are modest (top cells ~25%, off-direction cells 1.6–3.4%) — expected from a forced single pick over ~20 emotions, so these are *minority* top-picks, not majorities. The finding is the **role-flip mirror**: submissive self-powerless 25.7 / partner-powerful 24.7 ↔ dominant partner-powerless 20.1 / self-powerful 14.8, with the off-direction cells near-zero **and tightly estimated** (n ≈ 1,200; 95% CI ±0.7–1.0pp). Four cells flipping exactly by role is not noise — it is the asymmetry. Licensed claim: *a consistent complementary structure by role*, not *most CGL respondents want a given emotion*. (Per the report-wide low-% policy: prevalence ≠ patterning.)
 
 The submissive and dominant rows are near-perfect mirror images: each camp wants one party powerless and the other powerful, in opposite directions (submissive: self-powerless 25.7 / partner-powerful 24.7; dominant: partner-powerless 20.1 / self-powerful 14.8). The switch/equal middle is roughly balanced. This is the mechanism behind the "bidirectional asymmetry" framing and Highlight 2's mirror figure, and it is consistent with Chapter 3 — CGL+ contains substantial dominant and switch minorities, not only submissives. Pooling the three rows partially cancels the opposing directions, which is why the aggregate `otherfeel1most` gaps look small and bidirectional.
 

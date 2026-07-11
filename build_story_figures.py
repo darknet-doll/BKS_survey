@@ -1087,19 +1087,20 @@ def figure_nsfw_acts_positions(nsfw: pd.DataFrame) -> pd.DataFrame:
                    .sort_values("gap", ascending=False).head(6).copy())
     pos_top = pos_stats.sort_values("gap", ascending=False).head(min(6, len(pos_stats))).copy()
 
-    # Stack bottom→top: positions · distinctive acts · near-universal anchors (flat, on top).
-    # Within each block, order by gap (numeric difference) — ascending sort puts the
-    # LARGEST gap at the TOP of its block (fingering mouths leads the distinctive acts;
-    # handjobs leads the near-universal ones).
+    # Stack bottom→top: positions · near-universal anchors (flat) · distinctive acts (on top).
+    # Distinctive acts (facefucking etc.) sit ABOVE the near-universal anchors (handjobs etc.)
+    # so CGL's real edge reads at the top. Within each block, order by gap (numeric
+    # difference) — ascending sort puts the LARGEST gap at the TOP of its block
+    # (fingering mouths leads the distinctive acts; handjobs leads the near-universal ones).
     pos_block = pos_top.sort_values("gap", ascending=True)
     dist_block = distinctive.sort_values("gap", ascending=True)
     anchor_block = anchors.sort_values("gap", ascending=True)
-    plot_df = pd.concat([pos_block, dist_block, anchor_block], ignore_index=True)
+    plot_df = pd.concat([pos_block, anchor_block, dist_block], ignore_index=True)
 
-    # Family-level geometry: keep both separators (baseline vs distinctive, acts vs
-    # positions), but label each family ONCE, centered, on the left.
+    # Family-level geometry: keep both separators (acts vs positions, anchors vs
+    # distinctive), but label each family ONCE, centered, on the left.
     sep_pos = len(pos_block) - 1
-    sep_dist = len(pos_block) + len(dist_block) - 1
+    sep_dist = len(pos_block) + len(anchor_block) - 1
     pos_label_y = (len(pos_block) - 1) / 2.0
     acts_label_y = (len(pos_block) + len(plot_df) - 1) / 2.0
 
@@ -1118,9 +1119,12 @@ def figure_nsfw_acts_positions(nsfw: pd.DataFrame) -> pd.DataFrame:
     )
     ax.set_xticks([0, 20, 40, 60, 80, 100])
 
-    # Shade the anchor band so the "flat baseline" reads at a glance.
-    for i in range(len(pos_block) + len(dist_block), len(plot_df)):
-        ax.axhspan(i - 0.5, i + 0.5, color=INK["hairline"], alpha=0.22, zorder=0)
+    # Highlight the top band — the distinctive face/mouth/control acts (CGL's real edge) — in red.
+    # One continuous span (like 6b's cluster band), NOT a per-row loop — adjacent spans
+    # leave faint seam lines between rows; a single span reads as one clean block.
+    dist_lo = len(pos_block) + len(anchor_block)
+    dist_hi = len(plot_df) - 1
+    ax.axhspan(dist_lo - 0.5, dist_hi + 0.5, color=SEMANTIC["bad"], alpha=0.12, zorder=0)
 
     # Summary table (top): the few acts that lead + the flat baseline, with strength.
     top3 = distinctive.sort_values("gap", ascending=False).head(3)

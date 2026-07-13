@@ -256,8 +256,8 @@ def figure_personality(df: pd.DataFrame) -> None:
 
     # Headline title — placed via fig.suptitle so layout reserves space for it.
     fig.suptitle(
-        "Data distribution shows no significant difference\n"
-        "as to whether someone identifies with the OCEAN personality test",
+        "Personality or belief on locus of control\n"
+        "shows no significant difference in this desire",
         x=0.005, y=0.995, ha="left", va="top",
         fontsize=18, fontweight="bold", color=INK["primary"],
     )
